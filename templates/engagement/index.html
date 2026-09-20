@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Engagement Dashboard{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">Member Engagement Dashboard</h1>
+<p class="text-xs text-brand-400 mb-4 max-w-2xl">
+  Engagement scores are an administrative participation indicator derived from attendance, event participation,
+  ministry and group involvement over the last 90 days. They are not a psychological, spiritual, or medical
+  assessment of any individual.
+</p>
+
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+  {% kpi 'Average Score' summary.average_score %}
+  {% kpi 'Highly Engaged' highly_engaged 'gold' %}
+  {% kpi 'Engaged' engaged %}
+  {% kpi 'Moderately Engaged' moderately_engaged %}
+  {% kpi 'Low / Inactive' low_or_inactive %}
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Engagement by Ministry</h2>
+    <canvas id="ministryChart" height="220"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Members Needing Follow-up (lowest scores)</h2>
+    <ul class="text-sm space-y-2 max-h-64 overflow-y-auto">
+      {% for r in needs_followup %}
+      <li class="flex justify-between border-b border-brand-50 pb-1">
+        <a href="{% url 'members:view' r.member.id %}" class="hover:text-brand-600">{{ r.member.full_name }}</a>
+        <span>{{ r.score }} · {% badge r.category 'gold' %}</span>
+      </li>
+      {% empty %}<li class="text-brand-400">No members currently flagged as low engagement.</li>{% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script>
+new Chart(document.getElementById('ministryChart'), { type: 'bar',
+  data: {
+    labels: {{ ministry_labels|to_json }},
+    datasets: [{ data: {{ ministry_values|to_json }}, backgroundColor: '#3B4A6B' }]
+  },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { max: 100 } } }
+});
+</script>
+{% endblock %}

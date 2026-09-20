@@ -52,6 +52,20 @@ class EfficiencyMetric(models.Model):
             ((self.previous_process_value - self.cmis_process_value) / self.previous_process_value) * 100, 1
         )
 
+    @property
+    def improvement_label(self):
+        pct = self.improvement_percent
+        if pct is None:
+            return None
+        return f"{pct}% {'faster' if pct >= 0 else 'slower'}"
+
+    @property
+    def improvement_color(self):
+        pct = self.improvement_percent
+        if pct is None:
+            return "brand"
+        return "gold" if pct >= 0 else "brand"
+
     def __str__(self):
         return self.metric_name
 

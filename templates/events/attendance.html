@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Record Event Attendance{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">{{ event.title }} — Attendance</h1>
+<p class="text-sm text-brand-500 mb-4">Mark which registered participants actually attended.</p>
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+  {% csrf_token %}
+  <div class="space-y-2 mb-4">
+    {% for p in event.participants.all %}
+    <label class="flex items-center gap-2 text-sm p-2 hover:bg-brand-50 rounded">
+      <input type="checkbox" name="attended_member_ids" value="{{ p.member_id }}" {% if p.attended %}checked{% endif %}>
+      {{ p.member.full_name }}
+    </label>
+    {% empty %}<p class="text-sm text-brand-400">No participants registered yet.</p>{% endfor %}
+  </div>
+  <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Save Attendance</button>
+</form>
+{% endblock %}

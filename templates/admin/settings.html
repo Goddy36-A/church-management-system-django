@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">System Settings</h1>
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-xl space-y-3">
+  {% csrf_token %}
+  {% for s in settings %}
+  <div>
+    <label class="block text-sm font-medium text-brand-700 mb-1">{{ s.key }}</label>
+    <input class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="setting_{{ s.key }}" value="{{ s.value|default:'' }}">
+    <p class="text-xs text-brand-400">{{ s.description|default:'' }}</p>
+  </div>
+  {% empty %}
+  <p class="text-sm text-brand-400">No configurable settings yet. Core settings (church name, demo mode) are set via environment variables in <code>.env</code>.</p>
+  {% endfor %}
+  {% if settings %}<button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Save Settings</button>{% endif %}
+</form>
+{% endblock %}

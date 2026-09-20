@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Attendance Sessions</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'attendance:analytics' %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Analytics</a>
+    <a href="{% url 'attendance:create_session' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New Session</a>
+  </div>
+</div>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Date</th><th class="p-3">Title</th><th class="p-3">Type</th><th class="p-3">Present</th><th class="p-3">Visitors</th></tr></thead>
+  <tbody>
+    {% for s in sessions %}
+    <tr class="border-t border-brand-50 hover:bg-brand-50/40">
+      <td class="p-3">{{ s.session_date|date:"d M Y" }}</td>
+      <td class="p-3 font-medium"><a href="{% url 'attendance:view_session' s.id %}" class="hover:text-brand-600">{{ s.title }}</a></td>
+      <td class="p-3">{{ service_labels|get_item:s.service_type|default:s.service_type }}</td>
+      <td class="p-3">{{ s.present_count }}</td>
+      <td class="p-3">{{ s.visitor_count }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="5" class="p-6 text-center text-brand-400">No attendance sessions yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% pagination pagination 'attendance:index' %}
+{% endblock %}

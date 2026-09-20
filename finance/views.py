@@ -119,9 +119,13 @@ def reports(request):
         by_month[month_key] = by_month.get(month_key, 0) + float(c.amount)
 
     sorted_months = sorted(by_month.keys())
+    category_labels = list(by_category.keys())
+    category_values = [by_category[k] for k in category_labels]
 
     return render(request, "contributions/reports.html", {
         "by_category": by_category,
+        "category_labels": category_labels,
+        "category_values": category_values,
         "month_labels": sorted_months,
         "month_values": [by_month[m] for m in sorted_months],
         "total": sum(float(c.amount) for c in contributions),

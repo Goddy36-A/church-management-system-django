@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}{{ session.title }}{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <h1 class="font-display text-2xl font-semibold">{{ session.title }}</h1>
+    <p class="text-sm text-brand-500">{{ session.session_date|date:"d F Y" }} · {{ service_labels|get_item:session.service_type|default:session.service_type }}</p>
+  </div>
+  <a href="{% url 'attendance:record' session.id %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Edit Attendance</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+  {% kpi 'Present' session.present_count %}
+  {% kpi 'Visitors' session.visitor_count 'gold' %}
+  {% kpi 'Total Records' session.records.count %}
+</div>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Name</th><th class="p-3">Type</th></tr></thead>
+  <tbody>
+  {% for r in session.records.all %}
+    {% if r.present %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{% if r.member %}{{ r.member.full_name }}{% else %}{{ r.visitor_name }}{% endif %}</td>
+      <td class="p-3">{% if r.is_visitor %}Visitor{% else %}Member{% endif %}</td>
+    </tr>
+    {% endif %}
+  {% empty %}<tr><td colspan="2" class="p-6 text-center text-brand-400">No attendance recorded yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

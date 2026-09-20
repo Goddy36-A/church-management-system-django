@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load cmis_extras humanize %}
+{% block title %}Financial Reports{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Financial Reports (last 12 months)</h1>
+<div class="bg-white rounded-xl border border-brand-100 p-4 shadow-sm">
+  <p class="text-xs uppercase tracking-wide text-brand-500/70 font-medium">Total Contributions</p>
+  <p class="text-2xl font-display font-semibold text-brand-600 mt-1">UGX {{ total|floatformat:0|intcomma }}</p>
+</div>
+<div class="grid md:grid-cols-2 gap-6 mt-4">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Monthly Trend</h2>
+    <canvas id="monthChart" height="200"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Category</h2>
+    <canvas id="categoryChart" height="200"></canvas>
+  </div>
+</div>
+<script>
+new Chart(document.getElementById('monthChart'), {
+  type: 'bar',
+  data: { labels: {{ month_labels|to_json }}, datasets: [{ label: 'UGX', data: {{ month_values|to_json }}, backgroundColor: '#3B4A6B' }] },
+  options: { plugins: { legend: { display: false } } }
+});
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: { labels: {{ category_labels|to_json }}, datasets: [{ data: {{ category_values|to_json }}, backgroundColor: ['#3B4A6B','#C99A4B','#8AA0C7','#E4C591','#5B6E96'] }] }
+});
+</script>
+{% endblock %}

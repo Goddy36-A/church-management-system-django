@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Attendance Report (last 180 days)</h1>
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Attendance Trend</h2>
+    <canvas id="trendChart" height="200"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Service Type</h2>
+    <canvas id="typeChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm mt-6">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Date</th><th class="p-3">Session</th><th class="p-3">Present</th><th class="p-3">Visitors</th></tr></thead>
+  <tbody>
+    {% for s in sessions %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ s.session_date|date:"d M Y" }}</td>
+      <td class="p-3">{{ s.title }}</td>
+      <td class="p-3">{{ s.present_count }}</td>
+      <td class="p-3">{{ s.visitor_count }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="4" class="p-6 text-center text-brand-400">No sessions recorded in this period.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script>
+new Chart(document.getElementById('trendChart'), { type: 'line',
+  data: { labels: {{ labels|to_json }}, datasets: [{ label: 'Present', data: {{ present_counts|to_json }}, borderColor: '#3B4A6B', tension: 0.3 }] } });
+new Chart(document.getElementById('typeChart'), { type: 'bar',
+  data: { labels: {{ service_type_labels|to_json }}, datasets: [{ data: {{ service_type_values|to_json }}, backgroundColor: '#C99A4B' }] },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+</script>
+{% endblock %}

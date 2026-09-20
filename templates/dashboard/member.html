@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">
+  {% if member %}Welcome, {{ member.first_name }}{% else %}Welcome{% endif %}
+</h1>
+<p class="text-sm text-brand-500 mb-6">Your church information at a glance.</p>
+
+{% if not member %}
+<div class="bg-amber-50 border border-amber-200 text-amber-700 rounded-lg p-4 text-sm mb-6">
+  Your account isn't yet linked to a member profile. Please contact the church office.
+</div>
+{% endif %}
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Announcements</h2>
+    {% if announcements %}
+    <ul class="space-y-2 text-sm">
+      {% for a in announcements %}
+      <li class="border-b border-brand-50 pb-2">
+        <p class="font-medium">{{ a.title }}</p>
+        <p class="text-brand-600 mt-1">{{ a.message }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">No announcements right now.</p>{% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Upcoming Events</h2>
+    {% if upcoming_events %}
+    <ul class="space-y-2 text-sm">
+      {% for e in upcoming_events %}
+      <li class="flex justify-between border-b border-brand-50 pb-2">
+        <a href="{% url 'events:view' e.id %}" class="hover:text-brand-600">{{ e.title }}</a>
+        <span class="text-brand-500">{{ e.start_date|date:"d M" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">Nothing scheduled.</p>{% endif %}
+  </div>
+
+  {% if member %}
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">My Profile</h2>
+    <p class="text-sm">Member No: {{ member.member_no }}</p>
+    <p class="text-sm">Ministry: {{ member.ministry.name|default:'Not assigned' }}</p>
+    <p class="text-sm">Status: {{ member.get_membership_status_display }}</p>
+  </div>
+
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">My Recent Attendance</h2>
+    {% if attendance_history %}
+    <ul class="text-sm space-y-1">
+      {% for r in attendance_history %}
+      <li>{{ r.session.title }} — {{ r.session.session_date|date:"d M Y" }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">No attendance recorded yet.</p>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

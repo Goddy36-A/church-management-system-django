@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Events{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">{% if show_past %}Past Events{% else %}Upcoming Events{% endif %}</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'events:index' %}{% if not show_past %}?past=1{% endif %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">
+      {% if show_past %}View upcoming{% else %}View past events{% endif %}
+    </a>
+    {% if can_manage %}<a href="{% url 'events:create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New Event</a>{% endif %}
+  </div>
+</div>
+<div class="grid md:grid-cols-2 gap-4">
+  {% for e in events %}
+  <a href="{% url 'events:view' e.id %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <div class="flex justify-between items-start">
+      <h2 class="font-medium">{{ e.title }}</h2>
+      <span class="text-xs text-brand-500">{{ e.start_date|date:"d M Y" }}</span>
+    </div>
+    <p class="text-xs text-brand-500 mt-1">{{ e.location|default:'Location TBA' }}</p>
+    <p class="text-sm text-brand-600 mt-2 line-clamp-2">{{ e.description|default:'' }}</p>
+    <p class="text-xs text-brand-400 mt-2">{{ e.registered_count }} registered{% if e.max_participants %} / {{ e.max_participants }} max{% endif %}</p>
+  </a>
+  {% empty %}<p class="text-brand-400 text-sm">No events found.</p>{% endfor %}
+</div>
+{% endblock %}

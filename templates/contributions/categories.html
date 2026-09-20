@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Contribution Categories{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Contribution Categories</h1>
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Existing Categories</h2>
+    <ul class="text-sm space-y-2">
+      {% for c in categories %}
+      <li class="border-b border-brand-50 pb-2">{{ c.name }} <span class="text-xs text-brand-400">{{ c.description|default:'' }}</span></li>
+      {% empty %}<li class="text-brand-400">No categories yet.</li>{% endfor %}
+    </ul>
+  </div>
+  <form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm">
+    {% csrf_token %}
+    <h2 class="font-medium mb-3">Add Category</h2>
+    {% field 'Name' 'name' placeholder='e.g. Building Fund' required=True %}
+    {% textarea 'Description' 'description' rows=2 %}
+    <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Add Category</button>
+  </form>
+</div>
+{% endblock %}

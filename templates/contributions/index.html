@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load cmis_extras humanize %}
+{% block title %}Contributions{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Contributions</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'contributions:reports' %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Reports</a>
+    <a href="{% url 'contributions:categories' %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Categories</a>
+    <a href="{% url 'contributions:create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ Record Contribution</a>
+  </div>
+</div>
+
+<form method="GET" class="bg-white border border-brand-100 rounded-xl p-4 mb-4 grid md:grid-cols-4 gap-3">
+  <select name="category_id" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+    <option value="">All categories</option>
+    {% for c in categories %}<option value="{{ c.id }}" {% if category_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select>
+  <input type="date" name="start" value="{{ start }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+  <input type="date" name="end" value="{{ end }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+  <button class="text-sm px-3 py-2 rounded-lg bg-brand-100 text-brand-700 hover:bg-brand-200">Filter</button>
+</form>
+
+<div class="bg-white rounded-xl border border-brand-100 p-4 shadow-sm">
+  <p class="text-xs uppercase tracking-wide text-brand-500/70 font-medium">Total (filtered)</p>
+  <p class="text-2xl font-display font-semibold text-brand-600 mt-1">UGX {{ total|floatformat:0|intcomma }}</p>
+</div>
+
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm mt-4">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Date</th><th class="p-3">Member</th><th class="p-3">Category</th><th class="p-3">Amount</th><th class="p-3">Method</th></tr></thead>
+  <tbody>
+    {% for c in contributions %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ c.contribution_date|date:"d M Y" }}</td>
+      <td class="p-3">{{ c.member.full_name|default:'Anonymous' }}</td>
+      <td class="p-3">{{ c.category.name }}</td>
+      <td class="p-3">{{ c.currency }} {{ c.amount|floatformat:0|intcomma }}</td>
+      <td class="p-3">{{ c.payment_method|cut:'_'|title }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="5" class="p-6 text-center text-brand-400">No contributions match your filters.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

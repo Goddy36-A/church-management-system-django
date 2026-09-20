@@ -32,6 +32,17 @@ def index(request):
         [r for r in summary["members"] if r["score"] < 40], key=lambda r: r["score"]
     )[:20]
 
+    counts = summary["category_counts"]
+    low_or_inactive = counts.get("Low Engagement", 0) + counts.get("Inactive", 0)
+
     return render(request, "engagement/index.html", {
-        "summary": summary, "ministry_scores": ministry_scores, "needs_followup": needs_followup,
+        "summary": summary,
+        "ministry_scores": ministry_scores,
+        "ministry_labels": [m["ministry"] for m in ministry_scores],
+        "ministry_values": [m["average_score"] for m in ministry_scores],
+        "highly_engaged": counts.get("Highly Engaged", 0),
+        "engaged": counts.get("Engaged", 0),
+        "moderately_engaged": counts.get("Moderately Engaged", 0),
+        "low_or_inactive": low_or_inactive,
+        "needs_followup": needs_followup,
     })

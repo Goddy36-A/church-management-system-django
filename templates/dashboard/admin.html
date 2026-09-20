@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load cmis_extras humanize %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">Welcome back, {{ user.full_name|first_name|default:user.username }}</h1>
+<p class="text-sm text-brand-500 mb-6">Here's what's happening across the church today.</p>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  {% kpi 'Total Members' total_members %}
+  {% kpi 'Active Members' active_members 'gold' %}
+  {% kpi 'New Members' new_members %}
+  {% kpi 'Pending Follow-ups' pending_followups %}
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-medium">Upcoming Events</h2>
+      <a href="{% url 'events:index' %}" class="text-xs text-brand-500 hover:underline">View all</a>
+    </div>
+    {% if upcoming_events %}
+    <ul class="space-y-2 text-sm">
+      {% for e in upcoming_events %}
+      <li class="flex justify-between border-b border-brand-50 pb-2">
+        <a href="{% url 'events:view' e.id %}" class="hover:text-brand-600">{{ e.title }}</a>
+        <span class="text-brand-500">{{ e.start_date|date:"d M Y" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">No upcoming events scheduled.</p>{% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-medium">Recent Announcements</h2>
+      <a href="{% url 'announcements:index' %}" class="text-xs text-brand-500 hover:underline">View all</a>
+    </div>
+    {% if recent_announcements %}
+    <ul class="space-y-2 text-sm">
+      {% for a in recent_announcements %}
+      <li class="border-b border-brand-50 pb-2">
+        <p class="font-medium">{{ a.title }}</p>
+        <p class="text-brand-500 text-xs">{{ a.publish_date|date:"d M Y" }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">No announcements published yet.</p>{% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-2">Last Attendance Session</h2>
+    {% if last_session %}
+      <p class="text-sm">{{ last_session.title }} — {{ last_session.session_date|date:"d M Y" }}</p>
+      <p class="text-2xl font-display font-semibold text-brand-600 mt-1">{{ last_session.present_count }} present</p>
+      <a href="{% url 'attendance:view_session' last_session.id %}" class="text-xs text-brand-500 hover:underline">View details</a>
+    {% else %}<p class="text-sm text-brand-400">No attendance recorded yet.</p>{% endif %}
+  </div>
+
+  {% if user.can_view_finances %}
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-2">Contributions (last 30 days)</h2>
+    <p class="text-2xl font-display font-semibold text-gold-600">UGX {{ contribution_sum|floatformat:0|intcomma }}</p>
+    <a href="{% url 'contributions:index' %}" class="text-xs text-brand-500 hover:underline">View contributions</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Administrative Efficiency{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Administrative Efficiency Dashboard</h1>
+  <a href="{% url 'efficiency:add_metric' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ Add Baseline Metric</a>
+</div>
+
+<h2 class="font-medium text-brand-700 mb-2">System Usage Indicators (last 30 days)</h2>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+  {% kpi 'Member Records Processed' usage_indicators.member_records_processed %}
+  {% kpi 'Attendance Records Processed' usage_indicators.attendance_records_processed 'gold' %}
+  {% kpi 'Follow-ups Completed' usage_indicators.followups_completed %}
+  {% kpi 'Events Managed' usage_indicators.events_managed %}
+  {% kpi 'Announcements Published' usage_indicators.announcements_published %}
+</div>
+
+<h2 class="font-medium text-brand-700 mb-2">Manual Process vs. CMIS-Supported Process</h2>
+<p class="text-xs text-brand-400 mb-3 max-w-2xl">
+  These are researcher-entered, configurable measurements comparing time/effort under the previous manual process
+  against the CMIS-supported process. They are not fabricated — they reflect whatever values the researcher records
+  during the evaluation study.
+</p>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left">
+    <tr><th class="p-3">Metric</th><th class="p-3">Previous Process</th><th class="p-3">CMIS Process</th><th class="p-3">Improvement</th></tr>
+  </thead>
+  <tbody>
+    {% for metric in metrics %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ metric.metric_name }}</td>
+      <td class="p-3">{{ metric.previous_process_value }} {{ metric.unit }}</td>
+      <td class="p-3">{{ metric.cmis_process_value }} {{ metric.unit }}</td>
+      <td class="p-3">
+        {% if metric.improvement_label %}
+          {% badge metric.improvement_label metric.improvement_color %}
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="4" class="p-6 text-center text-brand-400">No baseline metrics recorded yet. Add one to begin measuring efficiency.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

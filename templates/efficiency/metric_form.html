@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Add Efficiency Metric{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Add Baseline / Measured Metric</h1>
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-xl">
+  {% csrf_token %}
+  {% field 'Metric name' 'metric_name' placeholder='e.g. Member registration time' required=True %}
+  <div class="grid md:grid-cols-3 gap-4">
+    {% field 'Previous process value' 'previous_process_value' type='number' required=True %}
+    {% field 'CMIS process value' 'cmis_process_value' type='number' required=True %}
+    <div class="mb-3">
+      <label class="block text-sm font-medium text-brand-700 mb-1">Unit</label>
+      <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="unit">
+        <option value="minutes">Minutes</option><option value="hours">Hours</option><option value="days">Days</option><option value="count">Count</option>
+      </select>
+    </div>
+  </div>
+  {% textarea 'Notes / measurement context' 'notes' rows=3 %}
+  <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Save Metric</button>
+</form>
+{% endblock %}

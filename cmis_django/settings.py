@@ -9,6 +9,13 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env if python-dotenv is installed (mirrors the original Flask setup).
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:
+    pass
+
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-not-for-production")
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
@@ -41,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -78,6 +86,20 @@ DATABASES = {
     }
 }
 
+# If DATABASE_URL is set (e.g. Postgres on Render), use it instead.
+_database_url = os.environ.get("DATABASE_URL")
+if _database_url:
+    from urllib.parse import urlparse
+    _parsed = urlparse(_database_url)
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": _parsed.path.lstrip("/"),
+        "USER": _parsed.username,
+        "PASSWORD": _parsed.password,
+        "HOST": _parsed.hostname,
+        "PORT": _parsed.port or "",
+    }
+
 AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -99,6 +121,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

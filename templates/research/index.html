@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}System Effectiveness Evaluation{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">System Effectiveness Evaluation</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'research:respond' %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Submit My Evaluation</a>
+    <a href="{% url 'research:add_question' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ Add Question</a>
+  </div>
+</div>
+<p class="text-xs text-brand-400 mb-6 max-w-2xl">
+  Likert-scale results below (1 = Strongly Disagree, 5 = Strongly Agree). Responses marked DEMO indicate
+  clearly-labeled demonstration data, not real respondent data, and should be excluded from any actual research analysis.
+</p>
+
+<div class="space-y-4">
+  {% for r in results %}
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <div class="flex justify-between items-start">
+      <p class="font-medium text-sm max-w-xl">{{ r.question.text }}</p>
+      {% if r.question.dimension == 'member_engagement' %}
+        {% badge 'Member Engagement' 'gold' %}
+      {% else %}
+        {% badge 'Administrative Efficiency' 'brand' %}
+      {% endif %}
+    </div>
+    <p class="text-xs text-brand-500 mt-2">n = {{ r.n }} responses ({{ r.demo_count }} demo) · Mean score: {{ r.mean }}</p>
+    <div class="grid grid-cols-5 gap-2 mt-3 text-center text-xs">
+      {% for bar in r.bars %}
+      <div>
+        <div class="bg-brand-50 rounded h-16 flex items-end">
+          <div class="bg-brand-500 w-full rounded" style="height: {{ bar.percent }}%"></div>
+        </div>
+        <p class="mt-1">{{ bar.score }} ({{ bar.percent }}%)</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% empty %}<p class="text-brand-400 text-sm">No evaluation questions configured yet.</p>{% endfor %}
+</div>
+{% endblock %}

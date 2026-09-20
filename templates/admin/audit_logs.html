@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Audit Logs{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Audit Logs</h1>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Time</th><th class="p-3">User</th><th class="p-3">Action</th><th class="p-3">Entity</th><th class="p-3">Description</th><th class="p-3">IP</th></tr></thead>
+  <tbody>
+    {% for log in logs %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3 text-xs text-brand-500">{{ log.created_at|date:"d M Y H:i" }}</td>
+      <td class="p-3">{{ log.user.full_name|default:'System' }}</td>
+      <td class="p-3">{% badge log.action %}</td>
+      <td class="p-3 text-xs">{{ log.entity_type|default:'' }}{% if log.entity_id %} #{{ log.entity_id }}{% endif %}</td>
+      <td class="p-3 text-xs text-brand-500">{{ log.description|default:'' }}</td>
+      <td class="p-3 text-xs text-brand-400">{{ log.ip_address|default:'' }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="6" class="p-6 text-center text-brand-400">No audit records yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% pagination pagination 'adminpanel:audit_logs' %}
+{% endblock %}

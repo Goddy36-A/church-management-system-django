@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <h1 class="font-display text-2xl font-semibold">{{ event.title }}</h1>
+    <p class="text-sm text-brand-500">{{ event.start_date|date:"d F Y" }}{% if event.end_date %} – {{ event.end_date|date:"d F Y" }}{% endif %} · {{ event.location|default:'Location TBA' }}</p>
+  </div>
+  {% if can_manage %}
+  <div class="flex gap-2">
+    <a href="{% url 'events:attendance' event.id %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Record Attendance</a>
+    <form method="POST" action="{% url 'events:archive' event.id %}" onsubmit="return confirm('Archive this event?');">
+      {% csrf_token %}
+      <button class="text-sm px-3 py-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50">Archive</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+<p class="text-sm text-brand-600 mb-6 max-w-2xl">{{ event.description|default:'' }}</p>
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+  {% kpi 'Registered' event.registered_count %}
+  {% kpi 'Attended' event.attended_count 'gold' %}
+  {% if event.max_participants %}{% kpi 'Capacity' event.max_participants %}{% endif %}
+</div>
+
+{% if user.member_id and not already_registered %}
+<form method="POST" action="{% url 'events:register' event.id %}" class="mb-6">
+  {% csrf_token %}
+  <button class="bg-gold-600 hover:bg-gold-500 text-white rounded-lg px-5 py-2 text-sm">Register for this event</button>
+</form>
+{% elif already_registered %}
+<p class="text-sm text-emerald-600 mb-6">You're registered for this event.</p>
+{% endif %}
+
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Participant</th><th class="p-3">Attended</th></tr></thead>
+  <tbody>
+    {% for p in event.participants.all %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ p.member.full_name }}</td>
+      <td class="p-3">{% if p.attended %}Yes{% else %}Not yet{% endif %}</td>
+    </tr>
+    {% empty %}<tr><td colspan="2" class="p-6 text-center text-brand-400">No one registered yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

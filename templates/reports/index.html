@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Reports</h1>
+<div class="grid md:grid-cols-3 gap-4">
+  <a href="{% url 'reports:membership' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Membership Report</h2>
+    <p class="text-xs text-brand-500 mt-1">Totals by status, gender, age group, and ministry</p>
+  </a>
+  <a href="{% url 'reports:attendance' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Attendance Report</h2>
+    <p class="text-xs text-brand-500 mt-1">Attendance trends and breakdown by service type</p>
+  </a>
+  <a href="{% url 'reports:administrative' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Administrative Report</h2>
+    <p class="text-xs text-brand-500 mt-1">Registrations, follow-ups, events, announcements (last 30 days)</p>
+  </a>
+  <a href="{% url 'engagement:index' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Engagement Report</h2>
+    <p class="text-xs text-brand-500 mt-1">Member participation indicators and trends</p>
+  </a>
+  {% if user.can_view_finances %}
+  <a href="{% url 'contributions:reports' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Financial Report</h2>
+    <p class="text-xs text-brand-500 mt-1">Contributions by category and month</p>
+  </a>
+  {% endif %}
+  {% if user.role.name|role_in:"admin,pastor,super_admin" %}
+  <a href="{% url 'efficiency:index' %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">Administrative Efficiency</h2>
+    <p class="text-xs text-brand-500 mt-1">Manual vs. system-supported process comparison</p>
+  </a>
+  {% endif %}
+</div>
+{% endblock %}

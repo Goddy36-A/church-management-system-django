@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from django.shortcuts import render
 
 from accounts.models import RoleName
@@ -52,8 +53,20 @@ def membership(request):
         else:
             age_bands["Over 60"] += 1
 
+    status_labels_list = [MembershipStatus.LABELS.get(k, k) for k in by_status.keys()]
+
     return render(request, "reports/membership.html", {
-        "total": total, "by_status": by_status, "status_labels": MembershipStatus.LABELS,
+        "total": total,
+        "by_status": by_status,
+        "status_labels": MembershipStatus.LABELS,
+        "status_chart_labels": status_labels_list,
+        "status_chart_values": list(by_status.values()),
+        "gender_labels": list(by_gender.keys()),
+        "gender_values": list(by_gender.values()),
+        "age_labels": list(age_bands.keys()),
+        "age_values": list(age_bands.values()),
+        "ministry_labels": list(by_ministry.keys()),
+        "ministry_values": list(by_ministry.values()),
         "by_gender": by_gender, "by_ministry": by_ministry, "age_bands": age_bands,
     })
 
@@ -71,15 +84,22 @@ def attendance(request):
     for s in sessions:
         by_service_type[s.service_type] = by_service_type.get(s.service_type, 0) + s.present_count
 
+    from attendance.models import ServiceType
+    service_type_labels = [ServiceType.LABELS.get(k, k) for k in by_service_type.keys()]
+
     return render(request, "reports/attendance.html", {
-        "sessions": sessions, "labels": labels, "present_counts": present_counts, "by_service_type": by_service_type,
+        "sessions": sessions, "labels": labels, "present_counts": present_counts,
+        "by_service_type": by_service_type,
+        "service_type_labels": service_type_labels,
+        "service_type_values": list(by_service_type.values()),
     })
 
 
 @login_required
 @roles_required(RoleName.ADMIN, RoleName.PASTOR)
 def administrative(request):
-    since = date.today() - timedelta(days=30)
+    # DateTimeFields are compared against an aware datetime, not a bare date.
+    since = timezone.now() - timedelta(days=30)
     new_registrations = Member.objects.filter(created_at__gte=since).count()
     followups_completed = FollowUp.objects.filter(completed_at__isnull=False, completed_at__gte=since).count()
     events_managed = Event.objects.filter(created_at__gte=since).count()

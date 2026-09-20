@@ -24,6 +24,11 @@ the CMIS admin panel, which occupies "/admin/" just like the original app.
 from django.contrib import admin
 from django.urls import include, path
 
+# Custom error handlers (templates live in templates/errors/)
+handler403 = "cmis_django.views.handler403"
+handler404 = "cmis_django.views.handler404"
+handler500 = "cmis_django.views.handler500"
+
 urlpatterns = [
     path("django-admin/", admin.site.urls),
 

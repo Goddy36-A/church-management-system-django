@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from django.shortcuts import redirect, render
 
 from accounts.models import RoleName
@@ -18,11 +19,14 @@ from .models import EfficiencyMetric
 @login_required
 @roles_required(RoleName.ADMIN, RoleName.PASTOR)
 def index(request):
-    since = date.today() - timedelta(days=30)
+    # AttendanceSession.session_date is a DateField; the rest are DateTimeFields,
+    # so each comparison uses the matching type.
+    since_date = date.today() - timedelta(days=30)
+    since = timezone.now() - timedelta(days=30)
 
     usage_indicators = {
         "member_records_processed": Member.objects.filter(created_at__gte=since).count(),
-        "attendance_records_processed": AttendanceSession.objects.filter(session_date__gte=since).count(),
+        "attendance_records_processed": AttendanceSession.objects.filter(session_date__gte=since_date).count(),
         "followups_completed": FollowUp.objects.filter(completed_at__isnull=False, completed_at__gte=since).count(),
         "events_managed": Event.objects.filter(created_at__gte=since).count(),
         "announcements_published": Announcement.objects.filter(created_at__gte=since).count(),

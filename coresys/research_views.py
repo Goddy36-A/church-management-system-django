@@ -22,9 +22,10 @@ def index(request):
         counts = {i: sum(1 for r in responses if r.score == i) for i in range(1, 6)}
         percentages = {i: round(counts[i] / n * 100, 1) if n else 0 for i in range(1, 6)}
         demo_count = sum(1 for r in responses if r.is_demo_data)
+        bars = [{"score": i, "percent": percentages[i], "count": counts[i]} for i in range(1, 6)]
         results.append({
             "question": q, "n": n, "mean": mean, "counts": counts,
-            "percentages": percentages, "demo_count": demo_count,
+            "percentages": percentages, "demo_count": demo_count, "bars": bars,
         })
 
     return render(request, "research/index.html", {"results": results})
@@ -68,4 +69,4 @@ def respond(request):
         messages.success(request, "Thank you - your evaluation responses have been recorded.")
         return redirect("dashboard:index")
 
-    return render(request, "research/respond.html", {"questions": questions})
+    return render(request, "research/respond.html", {"questions": questions, "scale": [1, 2, 3, 4, 5]})

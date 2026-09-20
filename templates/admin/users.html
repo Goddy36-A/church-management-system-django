@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">System Users</h1>
+  <a href="{% url 'adminpanel:create_user' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New User</a>
+</div>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Name</th><th class="p-3">Username</th><th class="p-3">Role</th><th class="p-3">Status</th><th class="p-3">Last Login</th><th class="p-3"></th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ u.full_name }}</td>
+      <td class="p-3">{{ u.username }}</td>
+      <td class="p-3">{{ u.role.label }}</td>
+      <td class="p-3">{% if u.is_active %}{% badge 'Active' 'gold' %}{% else %}{% badge 'Deactivated' 'brand' %}{% endif %}</td>
+      <td class="p-3 text-xs text-brand-400">{% if u.last_login_at %}{{ u.last_login_at|date:"d M Y H:i" }}{% else %}Never{% endif %}</td>
+      <td class="p-3 text-right flex gap-2 justify-end">
+        <form method="POST" action="{% url 'adminpanel:toggle_active' u.id %}">
+          {% csrf_token %}
+          <button class="text-xs text-brand-600 hover:underline">{% if u.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+        </form>
+        <form method="POST" action="{% url 'adminpanel:reset_password' u.id %}" onsubmit="return confirm('Reset password for this user?');">
+          {% csrf_token %}
+          <button class="text-xs text-brand-600 hover:underline">Reset Password</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Add Evaluation Question{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Add Evaluation Question</h1>
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-xl">
+  {% csrf_token %}
+  {% textarea 'Question text' 'text' rows=3 required=True %}
+  <div class="mb-3">
+    <label class="block text-sm font-medium text-brand-700 mb-1">Dimension</label>
+    <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="dimension">
+      <option value="administrative_efficiency">Administrative Efficiency</option>
+      <option value="member_engagement">Member Engagement</option>
+    </select>
+  </div>
+  <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Add Question</button>
+</form>
+{% endblock %}

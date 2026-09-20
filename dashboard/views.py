@@ -67,10 +67,16 @@ def pastor_dashboard(request):
     upcoming_events = Event.objects.filter(start_date__gte=today, is_archived=False).order_by("start_date")[:5]
     recent_announcements = Announcement.objects.filter(status="published").order_by("-publish_date")[:5]
 
+    needs_followup_count = (
+        engagement["category_counts"].get("Low Engagement", 0)
+        + engagement["category_counts"].get("Inactive", 0)
+    )
+
     return render(request, "dashboard/pastor.html", {
         "total_members": total_members,
         "active_members": active_members,
         "engagement": engagement,
+        "needs_followup_count": needs_followup_count,
         "pending_followups": pending_followups,
         "upcoming_events": upcoming_events,
         "recent_announcements": recent_announcements,

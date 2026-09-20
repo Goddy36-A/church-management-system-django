@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Announcements{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Announcements</h1>
+  {% if can_manage %}<a href="{% url 'announcements:create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New Announcement</a>{% endif %}
+</div>
+<div class="space-y-4 max-w-3xl">
+  {% for a in announcements %}
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <div class="flex justify-between items-start">
+      <h2 class="font-medium">{{ a.title }}</h2>
+      {% if a.priority == 'high' %}{% badge 'High Priority' 'gold' %}{% endif %}
+    </div>
+    <p class="text-sm text-brand-600 mt-2">{{ a.message }}</p>
+    <p class="text-xs text-brand-400 mt-3">{{ a.publish_date|date:"d M Y" }} · {{ a.author.full_name|default:'Church Office' }} · Audience: {{ a.get_target_audience_display }}</p>
+    {% if can_manage %}
+    <form method="POST" action="{% url 'announcements:archive' a.id %}" class="mt-2">
+      {% csrf_token %}
+      <button class="text-xs text-rose-500 hover:underline">Archive</button>
+    </form>
+    {% endif %}
+  </div>
+  {% empty %}<p class="text-brand-400 text-sm">No announcements right now.</p>{% endfor %}
+</div>
+{% endblock %}

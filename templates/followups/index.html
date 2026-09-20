@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Follow-ups{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Member Follow-ups</h1>
+  <a href="{% url 'followups:create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New Follow-up</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  {% kpi 'Pending' stats.pending|default:0 %}
+  {% kpi 'In Progress' stats.in_progress|default:0 'gold' %}
+  {% kpi 'Completed' stats.completed|default:0 %}
+  {% kpi 'Cancelled' stats.cancelled|default:0 %}
+</div>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Member</th><th class="p-3">Reason</th><th class="p-3">Assigned To</th><th class="p-3">Status</th><th class="p-3">Next Follow-up</th><th class="p-3"></th></tr></thead>
+  <tbody>
+    {% for f in followups %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3">{{ f.member.full_name }}</td>
+      <td class="p-3">{{ f.get_reason_display }}</td>
+      <td class="p-3">{{ f.assigned_to.full_name|default:'—' }}</td>
+      <td class="p-3">{% badge f.get_status_display %}</td>
+      <td class="p-3">{{ f.next_followup_date|default:'—' }}</td>
+      <td class="p-3">
+        <form method="POST" action="{% url 'followups:update_status' f.id %}" class="flex gap-2 items-center">
+          {% csrf_token %}
+          <select name="status" class="border border-brand-200 rounded text-xs px-1 py-1">
+            <option value="pending" {% if f.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="in_progress" {% if f.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="completed" {% if f.status == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="cancelled" {% if f.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+          <button class="text-xs text-brand-600 hover:underline">Update</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="6" class="p-6 text-center text-brand-400">No follow-ups recorded.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

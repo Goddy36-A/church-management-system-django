@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Attendance Analytics{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Attendance Trends (last 180 days)</h1>
+<div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+  <canvas id="attendanceChart" height="90"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('attendanceChart'), {
+  type: 'line',
+  data: {
+    labels: {{ labels|to_json }},
+    datasets: [
+      { label: 'Present', data: {{ present_counts|to_json }}, borderColor: '#3B4A6B', backgroundColor: 'rgba(59,74,107,0.1)', tension: 0.3 },
+      { label: 'Visitors', data: {{ visitor_counts|to_json }}, borderColor: '#C99A4B', backgroundColor: 'rgba(201,154,75,0.1)', tension: 0.3 }
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+</script>
+{% endblock %}

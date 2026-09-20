@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">Shepherding Overview</h1>
+<p class="text-sm text-brand-500 mb-6">Engagement and pastoral care at a glance.</p>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  {% kpi 'Total Members' total_members %}
+  {% kpi 'Active Members' active_members 'gold' %}
+  {% kpi 'Avg. Engagement Score' engagement.average_score %}
+  {% kpi 'Members Needing Follow-up' needs_followup_count %}
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Pending Follow-ups</h2>
+    {% if pending_followups %}
+    <ul class="space-y-2 text-sm">
+      {% for f in pending_followups %}
+      <li class="flex justify-between border-b border-brand-50 pb-2">
+        <span>{{ f.member.full_name }} — {{ f.get_reason_display }}</span>
+        <span class="text-brand-500">{{ f.get_status_display }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">No pending follow-ups. Great shepherding!</p>{% endif %}
+    <a href="{% url 'followups:index' %}" class="text-xs text-brand-500 hover:underline mt-3 inline-block">Manage follow-ups</a>
+  </div>
+
+  <div class="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Upcoming Events</h2>
+    {% if upcoming_events %}
+    <ul class="space-y-2 text-sm">
+      {% for e in upcoming_events %}
+      <li class="flex justify-between border-b border-brand-50 pb-2">
+        <span>{{ e.title }}</span><span class="text-brand-500">{{ e.start_date|date:"d M" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-brand-400">Nothing scheduled.</p>{% endif %}
+  </div>
+</div>
+
+<a href="{% url 'engagement:index' %}" class="inline-block mt-6 text-sm text-brand-600 hover:underline">Go to full Engagement Dashboard →</a>
+{% endblock %}

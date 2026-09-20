@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Administrative Report{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Administrative Report (last 30 days)</h1>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+  {% kpi 'New Registrations' new_registrations %}
+  {% kpi 'Follow-ups Completed' followups_completed 'gold' %}
+  {% kpi 'Events Managed' events_managed %}
+  {% kpi 'Announcements Published' announcements_published %}
+  {% kpi 'Total System Actions' activity_log_count %}
+</div>
+<p class="text-xs text-brand-400 mt-6 max-w-2xl">
+  These figures reflect activity actually recorded in the system over the last 30 days. For comparison against
+  manual/previous-process baselines, see the Administrative Efficiency dashboard, where researchers can enter
+  configurable baseline measurements.
+</p>
+{% endblock %}

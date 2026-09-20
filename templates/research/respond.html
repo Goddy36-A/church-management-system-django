@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Submit Evaluation{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">System Effectiveness Evaluation</h1>
+<p class="text-sm text-brand-500 mb-6">Please rate how much you agree with each statement. Your role: {{ user.role.label }}</p>
+
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-2xl space-y-5">
+  {% csrf_token %}
+  {% for q in questions %}
+  <div class="border-b border-brand-50 pb-4">
+    <p class="text-sm font-medium mb-2">{{ q.text }}</p>
+    <div class="flex gap-4 text-xs text-brand-500">
+      {% for i in scale %}
+      <label class="flex flex-col items-center gap-1">
+        <input type="radio" name="question_{{ q.id }}" value="{{ i }}">
+        {{ i }}
+      </label>
+      {% endfor %}
+    </div>
+    <div class="flex justify-between text-[10px] text-brand-400 mt-1 max-w-xs">
+      <span>Strongly Disagree</span><span>Strongly Agree</span>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-brand-400 text-sm">No evaluation questions have been configured yet.</p>
+  {% endfor %}
+  {% if questions %}
+  <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Submit Evaluation</button>
+  {% endif %}
+</form>
+{% endblock %}

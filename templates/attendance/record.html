@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Record Attendance{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">{{ session.title }}</h1>
+<p class="text-sm text-brand-500 mb-4">{{ session.session_date|date:"d F Y" }}</p>
+
+<form method="GET" class="mb-4">
+  <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm w-full max-w-sm" type="text" name="q" value="{{ q }}" placeholder="Search members to filter list...">
+</form>
+
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+  {% csrf_token %}
+  <h2 class="font-medium mb-3">Mark Present <span class="text-xs text-brand-400 font-normal">({{ members|length }} members shown)</span></h2>
+  <div class="grid md:grid-cols-3 gap-2 max-h-96 overflow-y-auto border border-brand-50 rounded-lg p-3 mb-6">
+    {% for member in members %}
+    <label class="flex items-center gap-2 text-sm p-1 hover:bg-brand-50 rounded">
+      <input type="checkbox" name="present_member_ids" value="{{ member.id }}" {% if member.id in existing_present %}checked{% endif %}>
+      {{ member.full_name }}
+    </label>
+    {% empty %}<p class="text-sm text-brand-400 col-span-3">No members match your search.</p>{% endfor %}
+  </div>
+
+  <h2 class="font-medium mb-2">Walk-in Visitors / First-time Guests</h2>
+  <div id="visitor-rows" class="space-y-2 mb-2">
+    <div class="grid md:grid-cols-2 gap-2">
+      <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
+      <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">
+    </div>
+  </div>
+  <button type="button" onclick="addVisitorRow()" class="text-xs text-brand-500 hover:underline mb-4">+ Add another visitor</button>
+
+  <div>
+    <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Save Attendance</button>
+  </div>
+</form>
+
+<script>
+function addVisitorRow() {
+  const container = document.getElementById('visitor-rows');
+  const row = document.createElement('div');
+  row.className = 'grid md:grid-cols-2 gap-2';
+  row.innerHTML = `<input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
+                    <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">`;
+  container.appendChild(row);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Membership Report{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Membership Report</h1>
+{% kpi 'Total Active Members' total %}
+<div class="grid md:grid-cols-2 gap-6 mt-4">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Status</h2>
+    <canvas id="statusChart" height="200"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Gender</h2>
+    <canvas id="genderChart" height="200"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Age Group</h2>
+    <canvas id="ageChart" height="200"></canvas>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">By Ministry</h2>
+    <canvas id="ministryChart" height="200"></canvas>
+  </div>
+</div>
+<script>
+new Chart(document.getElementById('statusChart'), { type: 'doughnut',
+  data: { labels: {{ status_chart_labels|to_json }}, datasets: [{ data: {{ status_chart_values|to_json }}, backgroundColor: ['#3B4A6B','#C99A4B','#8AA0C7','#E4C591','#5B6E96'] }] } });
+new Chart(document.getElementById('genderChart'), { type: 'pie',
+  data: { labels: {{ gender_labels|to_json }}, datasets: [{ data: {{ gender_values|to_json }}, backgroundColor: ['#3B4A6B','#C99A4B','#8AA0C7'] }] } });
+new Chart(document.getElementById('ageChart'), { type: 'bar',
+  data: { labels: {{ age_labels|to_json }}, datasets: [{ data: {{ age_values|to_json }}, backgroundColor: '#3B4A6B' }] },
+  options: { plugins: { legend: { display: false } } } });
+new Chart(document.getElementById('ministryChart'), { type: 'bar',
+  data: { labels: {{ ministry_labels|to_json }}, datasets: [{ data: {{ ministry_values|to_json }}, backgroundColor: '#C99A4B' }] },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+</script>
+{% endblock %}

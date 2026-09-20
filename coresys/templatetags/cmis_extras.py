@@ -56,6 +56,22 @@ def badge(text, color="brand"):
 
 
 @register.filter
+def first_name(full_name):
+    """First word of a full name, for greetings."""
+    if not full_name:
+        return ""
+    return full_name.split(" ")[0]
+
+
+@register.filter
+def to_json(value):
+    """Serialize a Python value to JSON for embedding in inline <script> blocks."""
+    import json
+    from django.utils.safestring import mark_safe
+    return mark_safe(json.dumps(value))
+
+
+@register.filter
 def parse_pairs(spec):
     """Turn 'val:Label,val2:Label2' into [('val','Label'), ('val2','Label2')] for inline select options."""
     pairs = []
