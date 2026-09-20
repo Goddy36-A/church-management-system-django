@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Archived Members{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">Archived Members</h1>
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Member No</th><th class="p-3">Name</th><th class="p-3"></th></tr></thead>
+  <tbody>
+    {% for member in members %}
+    <tr class="border-t border-brand-50">
+      <td class="p-3 text-brand-500">{{ member.member_no }}</td>
+      <td class="p-3">{{ member.full_name }}</td>
+      <td class="p-3 text-right">
+        <form method="POST" action="{% url 'members:restore' member.id %}">
+          {% csrf_token %}
+          <button class="text-xs text-brand-600 hover:underline">Restore</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="3" class="p-6 text-center text-brand-400">No archived members.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% pagination pagination 'members:archived' %}
+{% endblock %}

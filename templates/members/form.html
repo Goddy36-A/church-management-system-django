@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}{% if member %}Edit Member{% else %}Add Member{% endif %}{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-4">{% if member %}Edit {{ member.full_name }}{% else %}Register New Member{% endif %}</h1>
+<form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-3xl">
+  {% csrf_token %}
+  <div class="grid md:grid-cols-3 gap-4">
+    {% field 'First name' 'first_name' value=member.first_name required=True %}
+    {% field 'Middle name' 'middle_name' value=member.middle_name %}
+    {% field 'Last name' 'last_name' value=member.last_name required=True %}
+  </div>
+  <div class="grid md:grid-cols-3 gap-4">
+    {% select 'Gender' 'gender' options='male:Male,female:Female'|parse_pairs selected=member.gender blank_label='Select' %}
+    {% field 'Date of birth' 'date_of_birth' type='date' value=member.date_of_birth|date:'Y-m-d' %}
+    {% select 'Marital status' 'marital_status' options='single:Single,married:Married,widowed:Widowed,divorced:Divorced'|parse_pairs selected=member.marital_status blank_label='Select' %}
+  </div>
+  <div class="grid md:grid-cols-3 gap-4">
+    {% field 'Phone' 'phone' value=member.phone %}
+    {% field 'Email' 'email' type='email' value=member.email %}
+    {% field 'Occupation' 'occupation' value=member.occupation %}
+  </div>
+  {% field 'Physical address' 'physical_address' value=member.physical_address %}
+  <div class="grid md:grid-cols-2 gap-4">
+    {% field 'Emergency contact name' 'emergency_contact_name' value=member.emergency_contact_name %}
+    {% field 'Emergency contact phone' 'emergency_contact_phone' value=member.emergency_contact_phone %}
+  </div>
+  <div class="grid md:grid-cols-3 gap-4">
+    {% select 'Membership status' 'membership_status' options=status_options selected=member.membership_status|default:'new_member' %}
+    {% select 'Baptism status' 'baptism_status' options='not_baptized:Not Baptized,baptized:Baptized'|parse_pairs selected=member.baptism_status|default:'not_baptized' %}
+    {% select 'Ministry' 'ministry_id' options=ministry_options selected=member.ministry_id blank_label='None' %}
+  </div>
+  {% select 'Department' 'department_id' options=department_options selected=member.department_id blank_label='None' %}
+  {% textarea 'Notes' 'notes' value=member.notes rows=3 %}
+
+  <div class="flex gap-3 mt-4">
+    <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">{% if member %}Save changes{% else %}Register member{% endif %}</button>
+    <a href="{% url 'members:index' %}" class="px-5 py-2 text-sm text-brand-500 hover:underline">Cancel</a>
+  </div>
+</form>
+{% endblock %}

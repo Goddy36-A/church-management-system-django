@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ church_name }}{% endblock %} · CMIS</title>
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-display { font-family: 'Fraunces', serif; }
+</style>
+<script>
+  function togglePasswordVisibility(id) {
+    const input = document.getElementById(id);
+    const eye = document.getElementById(id + '-eye');
+    const eyeOff = document.getElementById(id + '-eye-off');
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      eye && eye.classList.add('hidden');
+      eyeOff && eyeOff.classList.remove('hidden');
+    } else {
+      input.type = 'password';
+      eye && eye.classList.remove('hidden');
+      eyeOff && eyeOff.classList.add('hidden');
+    }
+  }
+</script>
+</head>
+<body class="bg-brand-50 text-ink min-h-screen flex flex-col">
+
+{% if user.is_authenticated %}
+<header class="bg-brand-700 text-white sticky top-0 z-40 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-14">
+      <a href="{% url 'dashboard:index' %}" class="font-display font-semibold text-lg tracking-wide flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-gold inline-block"></span>{{ church_name }}
+      </a>
+      <button class="md:hidden text-white" onclick="document.getElementById('mobilenav').classList.toggle('hidden')">☰ Menu</button>
+      <nav class="hidden md:flex items-center gap-1 text-sm">
+        {% include 'partials/nav_links.html' %}
+      </nav>
+      <div class="hidden md:flex items-center gap-3 text-sm">
+        <span class="text-brand-100">{{ user.full_name }} <span class="text-gold">· {{ user.role.label }}</span></span>
+        <a href="{% url 'accounts:profile' %}" class="px-2 py-1 rounded hover:bg-brand-600">Profile</a>
+        <a href="{% url 'accounts:logout' %}" class="px-2 py-1 rounded bg-brand-600 hover:bg-brand-500">Logout</a>
+      </div>
+    </div>
+    <div id="mobilenav" class="hidden md:hidden pb-3 flex flex-col gap-1 text-sm">
+      {% include 'partials/nav_links.html' %}
+      <a href="{% url 'accounts:profile' %}" class="px-2 py-1 rounded hover:bg-brand-600">Profile</a>
+      <a href="{% url 'accounts:logout' %}" class="px-2 py-1 rounded bg-brand-600">Logout</a>
+    </div>
+  </div>
+</header>
+{% endif %}
+
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+  {% if demo_mode %}
+  <div class="mb-4 text-xs bg-gold-50 border border-gold-500/40 text-gold-600 rounded-lg px-3 py-2 inline-block">
+    DEMO MODE — seed data is fictional and clearly labeled for academic evaluation purposes.
+  </div>
+  {% endif %}
+
+  {% if messages %}
+    <div class="space-y-2 mb-4">
+    {% for message in messages %}
+      <div class="border rounded-lg px-4 py-2 text-sm
+        {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200
+        {% elif message.tags == 'error' %}bg-rose-50 text-rose-700 border-rose-200
+        {% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200
+        {% else %}bg-brand-50 text-brand-700 border-brand-200{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="text-center text-xs text-brand-500/70 py-4">
+  Church Management Information System — Academic Prototype, Mbarara City
+</footer>
+</body>
+</html>

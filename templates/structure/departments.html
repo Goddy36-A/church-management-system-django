@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Departments</h1>
+  <a href="{% url 'structure:department_create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ New Department</a>
+</div>
+<div class="grid md:grid-cols-3 gap-4">
+  {% for d in departments %}
+  <a href="{% url 'structure:department_view' d.id %}" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm hover:shadow-md transition block">
+    <h2 class="font-medium">{{ d.name }}</h2>
+    <p class="text-xs text-brand-500 mt-1">{{ d.description|default:'No description' }}</p>
+    <p class="text-xs text-brand-400 mt-2">Leader: {{ d.leader.full_name|default:'Unassigned' }}</p>
+  </a>
+  {% empty %}<p class="text-brand-400 text-sm">No departments yet.</p>{% endfor %}
+</div>
+{% endblock %}

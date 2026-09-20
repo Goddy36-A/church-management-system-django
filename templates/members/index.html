@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Members{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="font-display text-2xl font-semibold">Members</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'members:export_csv' %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Export CSV</a>
+    <a href="{% url 'members:create' %}" class="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700">+ Add Member</a>
+  </div>
+</div>
+
+<form method="GET" class="bg-white border border-brand-100 rounded-xl p-4 mb-4 grid md:grid-cols-4 gap-3">
+  <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm md:col-span-2" type="text" name="q" value="{{ q }}" placeholder="Search by name, ID, phone, email">
+  <select class="border border-brand-200 rounded-lg px-3 py-2 text-sm" name="status">
+    <option value="">All statuses</option>
+    {% for s in statuses %}<option value="{{ s }}" {% if status == s %}selected{% endif %}>{{ status_labels|get_item:s }}</option>{% endfor %}
+  </select>
+  <select class="border border-brand-200 rounded-lg px-3 py-2 text-sm" name="ministry_id">
+    <option value="">All ministries</option>
+    {% for min in ministries %}<option value="{{ min.id }}" {% if ministry_id == min.id|stringformat:"s" %}selected{% endif %}>{{ min.name }}</option>{% endfor %}
+  </select>
+  <button class="text-sm px-3 py-2 rounded-lg bg-brand-100 text-brand-700 hover:bg-brand-200 md:col-span-4 md:w-40">Filter</button>
+</form>
+
+<div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
+<table class="w-full text-sm">
+  <thead class="bg-brand-50 text-brand-600 text-left">
+    <tr><th class="p-3">Member No</th><th class="p-3">Name</th><th class="p-3">Phone</th><th class="p-3">Status</th><th class="p-3">Ministry</th><th class="p-3"></th></tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+    <tr class="border-t border-brand-50 hover:bg-brand-50/40">
+      <td class="p-3 text-brand-500">{{ member.member_no }}</td>
+      <td class="p-3 font-medium"><a href="{% url 'members:view' member.id %}" class="hover:text-brand-600">{{ member.full_name }}</a></td>
+      <td class="p-3">{{ member.phone|default:'—' }}</td>
+      <td class="p-3">{% badge status_labels|get_item:member.membership_status %}</td>
+      <td class="p-3">{{ member.ministry.name|default:'—' }}</td>
+      <td class="p-3 text-right"><a href="{% url 'members:edit' member.id %}" class="text-brand-500 hover:underline text-xs">Edit</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="p-6 text-center text-brand-400">No members found. Try adjusting filters or add a new member.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% pagination pagination 'members:index' %}
+{% endblock %}

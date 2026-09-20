@@ -1,0 +1,30 @@
+{% load cmis_extras %}
+{% with r=user.role.name|default:"" %}
+<a href="{% url 'dashboard:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Dashboard</a>
+{% if r|role_in:"super_admin,admin,pastor,ministry_leader" %}
+<a href="{% url 'members:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Members</a>
+<a href="{% url 'attendance:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Attendance</a>
+<a href="{% url 'structure:ministries_index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Ministries</a>
+<a href="{% url 'followups:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Follow-ups</a>
+{% endif %}
+<a href="{% url 'events:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Events</a>
+<a href="{% url 'announcements:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Announcements</a>
+{% if user.can_view_finances %}
+<a href="{% url 'contributions:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Contributions</a>
+{% endif %}
+{% if r|role_in:"super_admin,admin,pastor,ministry_leader,finance_officer" %}
+<a href="{% url 'reports:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Reports</a>
+{% endif %}
+{% if r|role_in:"super_admin,admin,pastor,ministry_leader" %}
+<a href="{% url 'engagement:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Engagement</a>
+{% endif %}
+{% if r|role_in:"super_admin,admin,pastor" %}
+<a href="{% url 'efficiency:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Efficiency</a>
+<a href="{% url 'research:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Research</a>
+{% endif %}
+{% if r == "super_admin" %}
+<a href="{% url 'adminpanel:users' %}" class="px-2 py-1 rounded hover:bg-brand-600">Users</a>
+<a href="{% url 'adminpanel:audit_logs' %}" class="px-2 py-1 rounded hover:bg-brand-600">Audit Logs</a>
+<a href="{% url 'adminpanel:settings' %}" class="px-2 py-1 rounded hover:bg-brand-600">Settings</a>
+{% endif %}
+{% endwith %}

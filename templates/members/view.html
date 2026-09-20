@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}{{ member.full_name }}{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <h1 class="font-display text-2xl font-semibold">{{ member.full_name }}</h1>
+    <p class="text-sm text-brand-500">{{ member.member_no }} · {% badge member.get_membership_status_display %}</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'members:edit' member.id %}" class="text-sm px-3 py-2 rounded-lg border border-brand-200 hover:bg-white">Edit</a>
+    {% if not member.is_archived %}
+    <form method="POST" action="{% url 'members:archive' member.id %}" onsubmit="return confirm('Archive this member record?');">
+      {% csrf_token %}
+      <button class="text-sm px-3 py-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50">Archive</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid md:grid-cols-3 gap-6">
+  <div class="md:col-span-2 bg-white border border-brand-100 rounded-xl p-5 shadow-sm space-y-2 text-sm">
+    <h2 class="font-medium mb-2">Personal Information</h2>
+    <p><span class="text-brand-500">Gender:</span> {{ member.gender|default:'—' }}</p>
+    <p><span class="text-brand-500">Date of birth:</span> {{ member.date_of_birth|default:'—' }} {% if member.age %}({{ member.age }} yrs){% endif %}</p>
+    <p><span class="text-brand-500">Phone:</span> {{ member.phone|default:'—' }}</p>
+    <p><span class="text-brand-500">Email:</span> {{ member.email|default:'—' }}</p>
+    <p><span class="text-brand-500">Address:</span> {{ member.physical_address|default:'—' }}</p>
+    <p><span class="text-brand-500">Emergency contact:</span> {{ member.emergency_contact_name|default:'—' }} ({{ member.emergency_contact_phone|default:'—' }})</p>
+    <p><span class="text-brand-500">Marital status:</span> {{ member.marital_status|default:'—' }}</p>
+    <p><span class="text-brand-500">Occupation:</span> {{ member.occupation|default:'—' }}</p>
+    <p><span class="text-brand-500">Baptism status:</span> {{ member.baptism_status|cut:'_'|title }}</p>
+    <p><span class="text-brand-500">Date joined:</span> {{ member.date_joined }}</p>
+    <p><span class="text-brand-500">Ministry:</span> {{ member.ministry.name|default:'—' }}</p>
+    <p><span class="text-brand-500">Department:</span> {{ member.department.name|default:'—' }}</p>
+    <p><span class="text-brand-500">Groups/Cells:</span> {% if group_names %}{{ group_names|join:', ' }}{% else %}—{% endif %}</p>
+    {% if member.notes %}<p><span class="text-brand-500">Notes:</span> {{ member.notes }}</p>{% endif %}
+  </div>
+
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-2">Engagement Indicator</h2>
+    <p class="text-3xl font-display font-semibold text-brand-600">{{ engagement.score }}</p>
+    <p class="text-sm mb-3">{% badge engagement.category 'gold' %}</p>
+    <p class="text-xs text-brand-400 mb-3">Administrative participation indicator only — not a psychological or spiritual assessment. Based on the last {{ engagement.window_days }} days.</p>
+    <ul class="text-xs space-y-1">
+      <li>Attendance rate: {{ engagement.breakdown.attendance_rate }}%</li>
+      <li>Event participation: {{ engagement.breakdown.event_participation_rate }}%</li>
+      <li>Ministry participation: {% if engagement.breakdown.ministry_participation %}Yes{% else %}No{% endif %}</li>
+      <li>Group participation: {% if engagement.breakdown.group_participation %}Yes{% else %}No{% endif %}</li>
+      <li>Recent activity (30d): {% if engagement.breakdown.recent_activity %}Yes{% else %}No{% endif %}</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

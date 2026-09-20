@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load cmis_extras %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="min-h-[75vh] flex items-center justify-center py-8">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <div class="w-12 h-12 rounded-full bg-gold mx-auto mb-3"></div>
+      <h1 class="font-display text-2xl font-semibold text-brand-700">Create Your Account</h1>
+      <p class="text-sm text-brand-500">Join {{ church_name }}'s member portal</p>
+    </div>
+    <form method="POST" class="bg-white border border-brand-100 rounded-xl shadow-sm p-6">
+      {% csrf_token %}
+      {% field 'Full name' 'full_name' value=form|get_item:'full_name' required=True %}
+      {% field 'Username' 'username' value=form|get_item:'username' required=True %}
+      {% field 'Email' 'email' type='email' value=form|get_item:'email' required=True %}
+      {% field 'Phone (optional)' 'phone' value=form|get_item:'phone' %}
+      {% password_field 'Password (min 8 characters)' 'password' required=True autocomplete='new-password' minlength=8 %}
+      {% password_field 'Confirm password' 'confirm_password' required=True autocomplete='new-password' minlength=8 %}
+      <button class="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-2 text-sm font-medium transition mt-2">Create Account</button>
+    </form>
+    <p class="text-center text-sm text-brand-500 mt-4">
+      Already have an account? <a href="{% url 'accounts:login' %}" class="text-brand-600 hover:underline">Sign in</a>
+    </p>
+    <p class="text-center text-xs text-brand-400 mt-2 max-w-sm mx-auto">
+      New accounts are created with basic Member access. An administrator can link your account to your
+      existing member profile and adjust your role if needed.
+    </p>
+  </div>
+</div>
+{% endblock %}

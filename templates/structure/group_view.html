@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-1">{{ group.name }}</h1>
+<p class="text-sm text-brand-500 mb-6">{{ group.meeting_day|default:'' }} {{ group.location|default:'' }} · Leader: {{ group.leader.full_name|default:'Unassigned' }}</p>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Current Members</h2>
+    <ul class="space-y-2 text-sm">
+      {% for gm in group.memberships.all %}
+      <li class="flex justify-between items-center border-b border-brand-50 pb-2">
+        {{ gm.member.full_name }}
+        <form method="POST" action="{% url 'structure:group_remove_member' group.id gm.member_id %}">
+          {% csrf_token %}
+          <button class="text-xs text-rose-500 hover:underline">Remove</button>
+        </form>
+      </li>
+      {% empty %}<li class="text-brand-400">No members yet.</li>{% endfor %}
+    </ul>
+  </div>
+  <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+    <h2 class="font-medium mb-3">Add Member</h2>
+    <form method="POST" action="{% url 'structure:group_add_member' group.id %}" class="flex gap-2">
+      {% csrf_token %}
+      <select name="member_id" class="flex-1 border border-brand-200 rounded-lg px-3 py-2 text-sm">
+        {% for member in all_members %}
+        {% if member.id not in member_ids_in_group %}
+        <option value="{{ member.id }}">{{ member.full_name }}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+      <button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-4 py-2 text-sm">Add</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,22 +1,44 @@
 """
 URL configuration for cmis_django project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+Mapping mirrors the original Flask blueprint registration:
+  auth_bp          -> ""                 (accounts.urls)
+  dashboard_bp      -> "/"                (dashboard.urls)
+  members_bp        -> "/members/"        (members.urls)
+  attendance_bp      -> "/attendance/"     (attendance.urls)
+  structure_bp       -> ""                (members.structure_urls)
+  events_bp          -> "/events/"         (events.urls)
+  announcements_bp   -> "/announcements/"  (communications.urls)
+  followups_bp        -> "/followups/"      (communications.followup_urls)
+  contributions_bp    -> "/contributions/"  (finance.urls)
+  reports_bp          -> "/reports/"        (reportsapp.urls)
+  engagement_bp        -> "/engagement/"     (engagement.urls)
+  efficiency_bp         -> "/efficiency/"     (coresys.efficiency_urls)
+  research_bp           -> "/research/"       (coresys.research_urls)
+  admin_bp               -> "/admin/"          (adminpanel.urls)
+
+Django's own admin site is moved to "/django-admin/" to avoid clashing with
+the CMIS admin panel, which occupies "/admin/" just like the original app.
 """
+
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("django-admin/", admin.site.urls),
+
+    path("", include("accounts.urls")),
+    path("", include("dashboard.urls")),
+    path("members/", include("members.urls")),
+    path("attendance/", include("attendance.urls")),
+    path("", include("members.structure_urls")),
+    path("events/", include("events.urls")),
+    path("announcements/", include("communications.urls")),
+    path("followups/", include("communications.followup_urls")),
+    path("contributions/", include("finance.urls")),
+    path("reports/", include("reportsapp.urls")),
+    path("engagement/", include("engagement.urls")),
+    path("efficiency/", include("coresys.efficiency_urls")),
+    path("research/", include("coresys.research_urls")),
+    path("admin/", include("adminpanel.urls")),
 ]
