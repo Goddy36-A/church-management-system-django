@@ -6,6 +6,41 @@ data model, same URL paths, same role-based permissions, same screens.
 
 ## Quick start
 
+### Easiest — one command
+
+**Windows:** double-click `setup.bat` (first time), then `run.bat`.
+
+**Linux / macOS:**
+
+```bash
+./setup.sh      # first time only
+./run.sh
+```
+
+These create a virtualenv, install dependencies, migrate, seed demo data, and
+start the server at http://127.0.0.1:8000/.
+
+### Or use start.py directly
+
+If you already have the dependencies installed, `start.py` handles everything
+itself and is safe to re-run:
+
+```bash
+python start.py                 # setup (as needed) + run server
+python start.py --port 8080     # different port
+python start.py --host 0.0.0.0  # listen on the LAN (for a demo machine)
+python start.py --seed          # force the demo seed to run
+python start.py --reset         # DESTRUCTIVE: wipe DB, migrate, reseed
+python start.py --no-run        # set up, but don't start the server
+python start.py --check         # verify the install and exit
+```
+
+It checks the Python version, installs `requirements.txt` if Django is missing,
+generates any missing migrations, applies them, and seeds only when the database
+is empty.
+
+### Or do it manually
+
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -14,6 +49,21 @@ python manage.py migrate
 python manage.py seed_demo      # optional: fictional demo data
 python manage.py runserver
 ```
+
+### Helper scripts
+
+Matching `.bat` (Windows) and `.sh` (Linux/macOS) versions live in `scripts/`:
+
+| Script | Does |
+|---|---|
+| `setup` | Create venv, install deps, migrate, seed. Run once. |
+| `start` | Activate the venv and launch the server. Passes args to `start.py`. |
+| `seed` | Load the fictional demo data. |
+| `reset` | **Destructive.** Wipe the database and reseed, after confirmation. |
+| `test` | Run Django system checks and the test suite. |
+
+`setup.bat` / `run.bat` and `setup.sh` / `run.sh` at the project root are
+shortcuts to the two you'll use most.
 
 Then open http://127.0.0.1:8000/
 
@@ -73,6 +123,9 @@ Each Django app corresponds to a Flask blueprint / model module:
 Shared pieces live in `coresys`: `decorators.py` (`roles_required`,
 `finance_access_required`), `audit.py` (`log_action`), and
 `templatetags/cmis_extras.py`.
+
+Automation lives in `start.py` (the cross-platform bootstrapper) and `scripts/`
+(thin `.bat` / `.sh` wrappers around it).
 
 URL paths match the Flask app exactly. Django's built-in admin site is therefore
 mounted at `/django-admin/`, leaving `/admin/` to the CMIS admin panel as in the
