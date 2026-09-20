@@ -8,3 +8,8 @@ media/
 *.egg-info/
 .DS_Store
 db.sqlite3
+
+# autophage runtime state - local to each install, never shared
+.autophage.json
+autophage.log
+autophage.cron.log

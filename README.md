@@ -163,3 +163,42 @@ original.
 
 All routes, role permissions, and create/update flows have been exercised against
 seeded data. Not yet ported: the Flask `tests/` suite.
+
+## Self-destruct timer (autophage.py) — optional
+
+`autophage.py` is a 30-day countdown timer for this project. It is **not
+installed or running by default** — nothing happens until you explicitly run:
+
+```bash
+python autophage.py --install
+```
+
+That records the current time, registers a daily scheduled check (cron on
+Linux/macOS, Task Scheduler on Windows — or prints the command to add it
+yourself if neither is available), and from then on: **30 days later, the
+entire project directory is deleted**, unless you've disabled it first.
+
+```bash
+python autophage.py --status      # days remaining / enabled?
+python autophage.py --disable     # stop the countdown (state is kept)
+python autophage.py --enable      # turn it back on
+python autophage.py --uninstall   # remove the scheduled job + countdown state
+                                   # (does NOT delete the project)
+```
+
+Two things stop it, and only two:
+1. Setting `enabled` to `false` — via `--disable`, or by hand-editing
+   `.autophage.json`.
+2. Deleting `autophage.py` itself, which also removes its own scheduled job.
+
+In the final 7 days it logs a countdown warning to `autophage.log` on every
+scheduled check. When it fires, it writes a tombstone file one directory level
+up (`<project>-DELETED-<timestamp>.log`) explaining what happened and when,
+removes its own scheduled job, then deletes the project directory. It only
+ever touches its own directory tree — never anything outside it — and it
+never touches your GitHub remote, only the local working copy; re-clone to
+recover.
+
+It refuses to run at all unless it finds `manage.py` and
+`cmis_django/settings.py` right next to it, so a stray copy elsewhere can
+never delete the wrong directory.
