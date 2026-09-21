@@ -175,6 +175,10 @@ class Command(BaseCommand):
             user = User(
                 username=username, email=email, full_name=full_name,
                 role=roles[role_name], member=member_link,
+                # super_admin also gets Django admin (/django-admin/) access,
+                # matching their role's system-wide reach in the app itself.
+                is_staff=(role_name == RoleName.SUPER_ADMIN),
+                is_superuser=(role_name == RoleName.SUPER_ADMIN),
             )
             user.set_password(DEMO_PASSWORD)
             user.save()
