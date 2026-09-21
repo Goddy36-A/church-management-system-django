@@ -1,5 +1,7 @@
+# Core requirements. SQLite (the default database) needs nothing beyond
+# these — no C compiler, no build tools, works out of the box on Windows,
+# macOS, and Linux alike.
 Django==6.1.1
 python-dotenv==1.0.1
 gunicorn==22.0.0
-psycopg2-binary==2.9.9
 whitenoise==6.7.0

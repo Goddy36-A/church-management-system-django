@@ -94,6 +94,17 @@ automatically if `python-dotenv` is installed):
 | `DJANGO_DEBUG` | `true` | Set to `false` in production. |
 | `ALLOWED_HOSTS` | `*` | Comma-separated host list. |
 | `DATABASE_URL` | — | Postgres URL; falls back to SQLite when unset. |
+
+Postgres support (`psycopg2-binary`) is **not** in `requirements.txt` — local
+development uses SQLite and needs no C compiler or build tools. If you set
+`DATABASE_URL`, install the extra first:
+
+```bash
+pip install -r requirements-postgres.txt
+```
+
+Skipping this gives a clear error telling you to run that command, rather
+than a confusing build failure.
 | `DATABASE_NAME` | `db.sqlite3` | SQLite file path. |
 | `CHURCH_NAME` | Grace Family Church - Mbarara | Shown in the header. |
 | `DEMO_MODE` | `true` | Shows the demo-data banner. |

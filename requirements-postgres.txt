@@ -1,0 +1,14 @@
+# Optional: only needed if you set DATABASE_URL to a Postgres connection
+# string (see README). Not required for local development, which uses
+# SQLite by default.
+#
+# Install with:
+#   pip install -r requirements.txt -r requirements-postgres.txt
+#
+# psycopg2-binary 2.9.10+ ships prebuilt wheels for Python 3.10-3.13 on
+# Windows/macOS/Linux, so this installs without needing a C compiler or
+# Visual Studio Build Tools. If you ever see it try to "Build wheel for
+# psycopg2-binary" and fail, it means no prebuilt wheel matched your
+# Python version/OS — the fix is almost always to upgrade Python, not to
+# install Build Tools.
+psycopg2-binary==2.9.10

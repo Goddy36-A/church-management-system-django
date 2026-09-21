@@ -89,6 +89,16 @@ DATABASES = {
 # If DATABASE_URL is set (e.g. Postgres on Render), use it instead.
 _database_url = os.environ.get("DATABASE_URL")
 if _database_url:
+    try:
+        import psycopg2  # noqa: F401
+    except ImportError:
+        raise ImportError(
+            "DATABASE_URL is set, but psycopg2 isn't installed. Install the "
+            "Postgres extra with:\n"
+            "    pip install -r requirements-postgres.txt\n"
+            "(It's kept separate from requirements.txt because local "
+            "development uses SQLite and doesn't need it.)"
+        )
     from urllib.parse import urlparse
     _parsed = urlparse(_database_url)
     DATABASES["default"] = {
