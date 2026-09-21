@@ -23,6 +23,7 @@ the CMIS admin panel, which occupies "/admin/" just like the original app.
 
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic.base import RedirectView
 
 # Custom error handlers (templates live in templates/errors/)
 handler403 = "cmis_django.views.handler403"
@@ -31,6 +32,7 @@ handler500 = "cmis_django.views.handler500"
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
+    path("favicon.ico", RedirectView.as_view(url="/static/favicon.ico", permanent=True)),
 
     path("", include("accounts.urls")),
     path("", include("dashboard.urls")),

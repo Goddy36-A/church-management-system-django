@@ -14,6 +14,12 @@ from coresys.models import AuditLog, SystemSetting
 
 @login_required
 @roles_required(RoleName.SUPER_ADMIN)
+def index(request):
+    return redirect("adminpanel:users")
+
+
+@login_required
+@roles_required(RoleName.SUPER_ADMIN)
 def users(request):
     all_users = User.objects.order_by("full_name")
     return render(request, "admin/users.html", {"users": all_users})

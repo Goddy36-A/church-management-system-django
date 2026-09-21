@@ -4,6 +4,7 @@ from . import views
 app_name = "adminpanel"
 
 urlpatterns = [
+    path("", views.index, name="index"),
     path("users", views.users, name="users"),
     path("users/new", views.create_user, name="create_user"),
     path("users/<int:user_id>/toggle-active", views.toggle_active, name="toggle_active"),
