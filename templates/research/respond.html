@@ -7,8 +7,8 @@
 <form method="POST" class="bg-white border border-brand-100 rounded-xl p-6 shadow-sm max-w-2xl space-y-5">
   {% csrf_token %}
   {% for q in questions %}
-  <div class="border-b border-brand-50 pb-4">
-    <p class="text-sm font-medium mb-2">{{ q.text }}</p>
+  <fieldset class="border-b border-brand-50 pb-4">
+    <legend class="text-sm font-medium mb-2">{{ q.text }}</legend>
     <div class="flex gap-4 text-xs text-brand-500">
       {% for i in scale %}
       <label class="flex flex-col items-center gap-1">
@@ -20,7 +20,7 @@
     <div class="flex justify-between text-[10px] text-brand-400 mt-1 max-w-xs">
       <span>Strongly Disagree</span><span>Strongly Agree</span>
     </div>
-  </div>
+  </fieldset>
   {% empty %}
   <p class="text-brand-400 text-sm">No evaluation questions have been configured yet.</p>
   {% endfor %}

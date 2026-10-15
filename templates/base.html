@@ -4,9 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#232c42">
 <title>{% block title %}{{ church_name }}{% endblock %} · CMIS</title>
 <link rel="stylesheet" href="{% static 'css/app.css' %}">
 <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<link rel="stylesheet" href="{% static 'css/a11y.css' %}">
 <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 <style>
@@ -18,50 +20,50 @@
     const input = document.getElementById(id);
     const eye = document.getElementById(id + '-eye');
     const eyeOff = document.getElementById(id + '-eye-off');
+    const btn = document.getElementById(id + '-toggle');
     if (!input) return;
-    if (input.type === 'password') {
-      input.type = 'text';
-      eye && eye.classList.add('hidden');
-      eyeOff && eyeOff.classList.remove('hidden');
-    } else {
-      input.type = 'password';
-      eye && eye.classList.remove('hidden');
-      eyeOff && eyeOff.classList.add('hidden');
-    }
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    eye && eye.classList.toggle('hidden', show);
+    eyeOff && eyeOff.classList.toggle('hidden', !show);
+    if (btn) { btn.setAttribute('aria-pressed', String(show)); }
   }
 </script>
 </head>
 <body class="bg-brand-50 text-ink min-h-screen flex flex-col">
+<a class="cm-skip" href="#main-content">Skip to main content</a>
 
 {% if user.is_authenticated %}
-<header class="bg-brand-700 text-white sticky top-0 z-40 shadow-sm">
+<header class="cm-header bg-brand-700 text-white sticky top-0 z-40 shadow-sm">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between h-14">
-      <a href="{% url 'dashboard:index' %}" class="font-display font-semibold text-lg tracking-wide flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-gold inline-block"></span>{{ church_name }}
+    <div class="cm-header-top">
+      <a href="{% url 'dashboard:index' %}" class="cm-brand font-display font-semibold text-lg tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-gold inline-block flex-none" aria-hidden="true"></span><span class="cm-name">{{ church_name }}</span>
       </a>
-      <button class="md:hidden text-white" onclick="document.getElementById('mobilenav').classList.toggle('hidden')">☰ Menu</button>
-      <nav class="hidden md:flex items-center gap-1 text-sm">
-        {% include 'partials/nav_links.html' %}
-      </nav>
-      <div class="hidden md:flex items-center gap-3 text-sm">
-        <span class="text-brand-100">{{ user.full_name }} <span class="text-gold">· {{ user.role.label }}</span></span>
-        <a href="{% url 'accounts:profile' %}" class="px-2 py-1 rounded hover:bg-brand-600">Profile</a>
-        <a href="{% url 'accounts:logout' %}" class="px-2 py-1 rounded bg-brand-600 hover:bg-brand-500">Logout</a>
+      <div class="cm-user">
+        <span class="cm-user-label">{{ user.full_name }} <span class="text-gold">· {{ user.role.label }}</span></span>
+        <a href="{% url 'accounts:profile' %}" class="hover:bg-brand-600">Profile</a>
+        <a href="{% url 'accounts:logout' %}" class="bg-brand-600 hover:bg-brand-500">Logout</a>
       </div>
+      <button type="button" id="menu-toggle" class="cm-menu-btn" aria-expanded="false" aria-controls="mobilenav">
+        <span aria-hidden="true">☰&nbsp;</span>Menu
+      </button>
     </div>
-    <div id="mobilenav" class="hidden md:hidden pb-3 flex flex-col gap-1 text-sm">
+    <nav class="cm-nav-desktop" aria-label="Main">
       {% include 'partials/nav_links.html' %}
-      <a href="{% url 'accounts:profile' %}" class="px-2 py-1 rounded hover:bg-brand-600">Profile</a>
-      <a href="{% url 'accounts:logout' %}" class="px-2 py-1 rounded bg-brand-600">Logout</a>
-    </div>
+    </nav>
+    <nav id="mobilenav" class="cm-nav-mobile" aria-label="Main (mobile)" hidden>
+      {% include 'partials/nav_links.html' %}
+      <a href="{% url 'accounts:profile' %}" class="hover:bg-brand-600">Profile ({{ user.full_name|default:user.username }})</a>
+      <a href="{% url 'accounts:logout' %}" class="bg-brand-600">Logout</a>
+    </nav>
   </div>
 </header>
 {% endif %}
 
-<main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+<main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
   {% if demo_mode %}
-  <div class="mb-4 text-xs bg-gold-50 border border-gold-500/40 text-gold-600 rounded-lg px-3 py-2 inline-block">
+  <div class="cm-demo-banner mb-4 rounded-lg px-3 py-2 inline-block" role="note">
     DEMO MODE — seed data is fictional and clearly labeled for academic evaluation purposes.
   </div>
   {% endif %}
@@ -69,7 +71,8 @@
   {% if messages %}
     <div class="space-y-2 mb-4">
     {% for message in messages %}
-      <div class="border rounded-lg px-4 py-2 text-sm
+      <div role="{% if message.tags == 'error' or message.tags == 'warning' %}alert{% else %}status{% endif %}"
+        class="border rounded-lg px-4 py-2 text-sm
         {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200
         {% elif message.tags == 'error' %}bg-rose-50 text-rose-700 border-rose-200
         {% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200
@@ -83,8 +86,39 @@
   {% block content %}{% endblock %}
 </main>
 
-<footer class="text-center text-xs text-brand-500/70 py-4">
+<footer class="cm-footer text-center text-xs py-4">
   Church Management Information System — Academic Prototype, Mbarara City
 </footer>
+<script>
+(function () {
+  // Mobile menu: toggle `hidden`, keep aria-expanded in sync, Escape closes.
+  var btn = document.getElementById('menu-toggle'), menu = document.getElementById('mobilenav');
+  function setMenu(open) { if (!btn || !menu) return; menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); }
+  if (btn && menu) {
+    btn.addEventListener('click', function () { setMenu(menu.hidden); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); btn.focus(); } });
+  }
+
+  // Mark the current page in the nav (longest matching path prefix wins).
+  var path = location.pathname, navs = document.querySelectorAll('.cm-header nav');
+  navs.forEach(function (nav) {
+    var best = null, bestLen = 0;
+    nav.querySelectorAll('a[href]').forEach(function (a) {
+      var p = new URL(a.href, location.origin).pathname;
+      if ((p === path || (p !== '/' && path.indexOf(p) === 0)) && p.length > bestLen) { best = a; bestLen = p.length; }
+    });
+    if (best) best.setAttribute('aria-current', 'page');
+  });
+
+  // Horizontally scrolling tables: make them keyboard-scrollable and named.
+  document.querySelectorAll('.overflow-x-auto').forEach(function (box, i) {
+    if (!box.querySelector('table')) return;
+    var h = document.querySelector('main h1');
+    box.setAttribute('role', 'region');
+    box.setAttribute('tabindex', '0');
+    box.setAttribute('aria-label', (h ? h.textContent.trim() + ' table' : 'Data table') + (i ? ' ' + (i + 1) : ''));
+  });
+})();
+</script>
 </body>
 </html>

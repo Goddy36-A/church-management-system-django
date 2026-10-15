@@ -1,14 +1,14 @@
 {% load cmis_extras %}
 {% if page_obj and page_obj.paginator.num_pages > 1 %}
-<div class="flex items-center gap-2 mt-4 text-sm">
+<nav class="cm-pager flex flex-wrap items-center gap-2 mt-4 text-sm" aria-label="Pagination">
   {% if page_obj.has_previous %}
     <a class="px-3 py-1 rounded border border-brand-200 hover:bg-brand-50"
-       href="?{% qs_replace request page=page_obj.previous_page_number %}">Previous</a>
+       href="?{% qs_replace request page=page_obj.previous_page_number %}"><span aria-hidden="true">&larr;</span> Previous</a>
   {% endif %}
-  <span class="text-brand-500">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  <span class="text-brand-500" aria-current="page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
   {% if page_obj.has_next %}
     <a class="px-3 py-1 rounded border border-brand-200 hover:bg-brand-50"
-       href="?{% qs_replace request page=page_obj.next_page_number %}">Next</a>
+       href="?{% qs_replace request page=page_obj.next_page_number %}">Next <span aria-hidden="true">&rarr;</span></a>
   {% endif %}
-</div>
+</nav>
 {% endif %}

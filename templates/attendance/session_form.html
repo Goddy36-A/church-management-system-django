@@ -8,16 +8,16 @@
   {% field 'Session title' 'title' placeholder='e.g. Sunday Service - Morning' required=True %}
   <div class="grid md:grid-cols-2 gap-4">
     <div class="mb-3">
-      <label class="block text-sm font-medium text-brand-700 mb-1">Service type</label>
-      <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="service_type">
+      <label class="block text-sm font-medium text-brand-700 mb-1" for="id_service_type">Service type</label>
+      <select id="id_service_type" class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="service_type">
         {% for st in service_types %}<option value="{{ st }}">{{ service_labels|get_item:st }}</option>{% endfor %}
       </select>
     </div>
     {% field 'Session date' 'session_date' type='date' required=True %}
   </div>
   <div class="mb-3">
-    <label class="block text-sm font-medium text-brand-700 mb-1">Ministry (optional)</label>
-    <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="ministry_id">
+    <label class="block text-sm font-medium text-brand-700 mb-1" for="id_ministry_id">Ministry (optional)</label>
+    <select id="id_ministry_id" class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="ministry_id">
       <option value="">General / All members</option>
       {% for min in ministries %}<option value="{{ min.id }}">{{ min.name }}</option>{% endfor %}
     </select>

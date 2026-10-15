@@ -24,7 +24,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "cmis_django.apps.CMISAdminConfig",  # replaces django.contrib.admin (dashboard on /django-admin/)
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

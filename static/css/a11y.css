@@ -1,0 +1,75 @@
+/* Accessibility + responsiveness layer.
+   app.css is a pre-built (purged) Tailwind file, so any class that isn't
+   already used somewhere can't be added in templates. Everything new lives
+   here under the cm- prefix instead. */
+
+/* ---- Skip link + screen-reader-only text ---- */
+.cm-skip { position: absolute; left: .5rem; top: -4rem; z-index: 100; padding: .6rem 1rem;
+  background: #fff; color: #232c42; border: 2px solid #232c42; border-radius: .5rem; font-weight: 600; }
+.cm-skip:focus { top: .5rem; }
+.cm-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* ---- Visible focus (3:1+ against both light and dark surfaces) ---- */
+:focus-visible { outline: 3px solid #2e3a56; outline-offset: 2px; }
+.cm-header :focus-visible { outline-color: #fff; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #2e3a56 !important; outline-offset: 1px !important; }
+main[tabindex="-1"]:focus { outline: none; }
+
+/* ---- Header / navigation (wraps instead of overflowing at any width) ---- */
+.cm-header-top { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 3.5rem; }
+.cm-brand { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.cm-brand span.cm-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-user { display: none; align-items: center; gap: .75rem; font-size: .875rem; }
+.cm-nav-desktop { display: none; flex-wrap: wrap; gap: .25rem; font-size: .875rem; padding-bottom: .5rem; }
+.cm-nav-mobile { display: flex; flex-direction: column; gap: .25rem; font-size: .875rem; padding-bottom: .75rem; }
+.cm-nav-mobile[hidden] { display: none; }
+.cm-menu-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 .75rem; border-radius: .375rem;
+  border: 1px solid rgba(255,255,255,.5); background: transparent; color: #fff; font-size: .875rem; cursor: pointer; }
+.cm-menu-btn:hover { background: #2e3a56; }
+@media (min-width: 768px) {
+  .cm-user { display: flex; }
+  .cm-nav-desktop { display: flex; }
+  .cm-nav-mobile, .cm-menu-btn { display: none !important; }
+}
+.cm-nav-desktop a, .cm-nav-mobile a, .cm-user a { display: inline-block; padding: .5rem .6rem; border-radius: .375rem; }
+.cm-nav-mobile a { padding: .75rem; }
+.cm-header a[aria-current="page"] { background: #2e3a56; box-shadow: inset 0 -3px 0 #c99a4b; font-weight: 600; }
+.cm-user-label { color: #dce2ef; }
+
+/* ---- Contrast fixes ---- */
+.cm-demo-banner { background: #fbf4e7; border: 1px solid #b08337; color: #5c3f0c; font-size: .8125rem; }
+footer.cm-footer { color: #3b4a6b; }
+
+/* ---- Responsive content ---- */
+main { overflow-wrap: anywhere; }
+canvas, img, svg { max-width: 100%; }
+.overflow-x-auto > table { min-width: 36rem; }
+.overflow-x-auto:focus-visible { outline-offset: -3px; }
+@media (max-width: 520px) {
+  main .flex.items-center.justify-between { flex-wrap: wrap; gap: .5rem; }
+  main h1 { font-size: 1.35rem; line-height: 1.75rem; }
+}
+
+/* ---- Touch targets & form controls ---- */
+@media (pointer: coarse) {
+  main button, main select, main input:not([type="checkbox"]):not([type="radio"]) { min-height: 44px; }
+  main a.text-xs, main td a { display: inline-block; padding: .5rem .25rem; }
+}
+input[type="checkbox"], input[type="radio"] { width: 1.15rem; height: 1.15rem; accent-color: #2e3a56; }
+label:has(> input[type="checkbox"]), label:has(> input[type="radio"]) { min-height: 1.75rem; }
+.cm-field-error { color: #9f1239; font-size: .8125rem; margin-top: .25rem; }
+
+/* ---- Pagination ---- */
+.cm-pager a { display: inline-block; min-height: 44px; line-height: 1.5rem; }
+
+/* ---- Motion & contrast preferences ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+  .cm-header a[aria-current="page"] { outline: 2px solid LinkText; }
+}
+@media print {
+  .cm-header, .cm-skip, footer { display: none; }
+}

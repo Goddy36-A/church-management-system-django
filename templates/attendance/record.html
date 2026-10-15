@@ -5,7 +5,7 @@
 <p class="text-sm text-brand-500 mb-4">{{ session.session_date|date:"d F Y" }}</p>
 
 <form method="GET" class="mb-4">
-  <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm w-full max-w-sm" type="text" name="q" value="{{ q }}" placeholder="Search members to filter list...">
+  <input aria-label="Search members to filter list..." class="border border-brand-200 rounded-lg px-3 py-2 text-sm w-full max-w-sm" type="text" name="q" value="{{ q }}" placeholder="Search members to filter list...">
 </form>
 
 <form method="POST" class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
@@ -23,8 +23,8 @@
   <h2 class="font-medium mb-2">Walk-in Visitors / First-time Guests</h2>
   <div id="visitor-rows" class="space-y-2 mb-2">
     <div class="grid md:grid-cols-2 gap-2">
-      <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
-      <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">
+      <input aria-label="Visitor name" class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
+      <input aria-label="Phone (optional)" class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">
     </div>
   </div>
   <button type="button" onclick="addVisitorRow()" class="text-xs text-brand-500 hover:underline mb-4">+ Add another visitor</button>
@@ -39,8 +39,8 @@ function addVisitorRow() {
   const container = document.getElementById('visitor-rows');
   const row = document.createElement('div');
   row.className = 'grid md:grid-cols-2 gap-2';
-  row.innerHTML = `<input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
-                    <input class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">`;
+  row.innerHTML = `<input aria-label="Visitor name" class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_name" placeholder="Visitor name">
+                    <input aria-label="Phone (optional)" class="border border-brand-200 rounded-lg px-3 py-2 text-sm" type="text" name="visitor_phone" placeholder="Phone (optional)">`;
   container.appendChild(row);
 }
 </script>

@@ -4,7 +4,7 @@
 {% block content %}
 <h1 class="font-display text-2xl font-semibold mb-4">Attendance Trends (last 180 days)</h1>
 <div class="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
-  <canvas id="attendanceChart" height="90"></canvas>
+  <canvas role="img" aria-label="Line chart of attendance over time. Figures are also available in the tables on this page where shown." id="attendanceChart" height="90"></canvas>
 </div>
 <script>
 new Chart(document.getElementById('attendanceChart'), {

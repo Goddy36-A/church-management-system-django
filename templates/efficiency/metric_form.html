@@ -10,8 +10,8 @@
     {% field 'Previous process value' 'previous_process_value' type='number' required=True %}
     {% field 'CMIS process value' 'cmis_process_value' type='number' required=True %}
     <div class="mb-3">
-      <label class="block text-sm font-medium text-brand-700 mb-1">Unit</label>
-      <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="unit">
+      <label class="block text-sm font-medium text-brand-700 mb-1" for="id_unit">Unit</label>
+      <select id="id_unit" class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="unit">
         <option value="minutes">Minutes</option><option value="hours">Hours</option><option value="days">Days</option><option value="count">Count</option>
       </select>
     </div>
