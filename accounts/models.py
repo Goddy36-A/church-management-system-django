@@ -63,6 +63,14 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        # Super Administrators must be able to open the Django admin
+        # (/django-admin/), which requires is_staff + is_superuser.
+        if self.role_id and self.role and self.role.name == RoleName.SUPER_ADMIN:
+            self.is_staff = True
+            self.is_superuser = True
+        super().save(*args, **kwargs)
+
     def has_role(self, *role_names):
         return self.role and self.role.name in role_names
 

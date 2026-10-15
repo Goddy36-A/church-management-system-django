@@ -75,3 +75,19 @@ class AccessibilityBasicsTests(TestCase):
         self.user.is_staff = True
         self.user.save()
         self.assertContains(self.client.get("/"), "Admin Dashboard")
+
+
+@PLAIN_STATIC
+class SuperAdminStaffFlagTests(TestCase):
+    def test_super_admin_role_gets_staff_flags_on_save(self):
+        role, _ = Role.objects.get_or_create(name=RoleName.SUPER_ADMIN)
+        u = User.objects.create_user(username="sa", password="pw-12345-x", email="sa@x.org", role=role)
+        u.refresh_from_db()
+        self.assertTrue(u.is_staff and u.is_superuser)
+        self.client.force_login(u)
+        self.assertEqual(self.client.get("/django-admin/").status_code, 200)
+
+    def test_other_roles_are_not_made_staff(self):
+        role, _ = Role.objects.get_or_create(name=RoleName.ADMIN)
+        u = User.objects.create_user(username="ad", password="pw-12345-x", email="ad@x.org", role=role)
+        self.assertFalse(u.is_staff)
