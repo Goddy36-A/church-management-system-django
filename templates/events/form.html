@@ -17,15 +17,15 @@
     {% field 'Maximum participants' 'max_participants' type='number' %}
   </div>
   <div class="mb-3">
-    <label class="block text-sm font-medium text-brand-700 mb-1">Ministry (optional)</label>
-    <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="ministry_id">
+    <label class="block text-sm font-medium text-brand-700 mb-1" for="id_ministry_id">Ministry (optional)</label>
+    <select id="id_ministry_id" class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="ministry_id">
       <option value="">Church-wide</option>
       {% for min in ministries %}<option value="{{ min.id }}">{{ min.name }}</option>{% endfor %}
     </select>
   </div>
   <div class="mb-3">
-    <label class="block text-sm font-medium text-brand-700 mb-1">Status</label>
-    <select class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="status">
+    <label class="block text-sm font-medium text-brand-700 mb-1" for="id_status">Status</label>
+    <select id="id_status" class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm" name="status">
       {% for s in statuses %}<option value="{{ s }}">{{ s|title }}</option>{% endfor %}
     </select>
   </div>

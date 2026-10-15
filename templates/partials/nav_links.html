@@ -27,4 +27,7 @@
 <a href="{% url 'adminpanel:audit_logs' %}" class="px-2 py-1 rounded hover:bg-brand-600">Audit Logs</a>
 <a href="{% url 'adminpanel:settings' %}" class="px-2 py-1 rounded hover:bg-brand-600">Settings</a>
 {% endif %}
+{% if user.is_staff %}
+<a href="{% url 'admin:index' %}" class="px-2 py-1 rounded hover:bg-brand-600">Admin Dashboard</a>
+{% endif %}
 {% endwith %}

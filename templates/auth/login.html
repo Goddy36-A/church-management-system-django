@@ -12,12 +12,12 @@
     <form method="POST" class="bg-white border border-brand-100 rounded-xl shadow-sm p-6">
       {% csrf_token %}
       <div class="mb-3">
-        <label class="block text-sm font-medium text-brand-700 mb-1">Username or email</label>
-        <input class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold" type="text" name="username" required autofocus>
+        <label class="block text-sm font-medium text-brand-700 mb-1" for="username">Username or email</label>
+        <input class="w-full border border-brand-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold" type="text" id="username" name="username" autocomplete="username" required autofocus>
       </div>
       {% password_field 'Password' 'password' required=True autocomplete='current-password' %}
       <label class="flex items-center gap-2 text-sm text-brand-600 mb-4">
-        <input type="checkbox" name="remember"> Remember me
+        <input type="checkbox" name="remember" id="remember"> Remember me
       </label>
       <button class="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-2 text-sm font-medium transition">Sign in</button>
     </form>

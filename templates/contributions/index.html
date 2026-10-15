@@ -12,12 +12,12 @@
 </div>
 
 <form method="GET" class="bg-white border border-brand-100 rounded-xl p-4 mb-4 grid md:grid-cols-4 gap-3">
-  <select name="category_id" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+  <select aria-label="Category" name="category_id" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
     <option value="">All categories</option>
     {% for c in categories %}<option value="{{ c.id }}" {% if category_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
   </select>
-  <input type="date" name="start" value="{{ start }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
-  <input type="date" name="end" value="{{ end }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+  <input aria-label="Start" type="date" name="start" value="{{ start }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
+  <input aria-label="End" type="date" name="end" value="{{ end }}" class="border border-brand-200 rounded-lg px-3 py-2 text-sm">
   <button class="text-sm px-3 py-2 rounded-lg bg-brand-100 text-brand-700 hover:bg-brand-200">Filter</button>
 </form>
 
@@ -28,7 +28,7 @@
 
 <div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm mt-4">
 <table class="w-full text-sm">
-  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Date</th><th class="p-3">Member</th><th class="p-3">Category</th><th class="p-3">Amount</th><th class="p-3">Method</th></tr></thead>
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th scope="col" class="p-3">Date</th><th scope="col" class="p-3">Member</th><th scope="col" class="p-3">Category</th><th scope="col" class="p-3">Amount</th><th scope="col" class="p-3">Method</th></tr></thead>
   <tbody>
     {% for c in contributions %}
     <tr class="border-t border-brand-50">

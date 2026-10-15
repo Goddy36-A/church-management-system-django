@@ -83,6 +83,26 @@ Then open http://127.0.0.1:8000/
 All seeded records are fictional and tagged `DEMO DATA — fictional, for academic
 evaluation purposes only.` Re-run with `--reset` to wipe and reseed.
 
+## Django admin dashboard
+
+The built-in Django admin lives at `/django-admin/` (the custom CMIS panel stays
+at `/admin/`). Its index page is now a dashboard: member, event, follow-up,
+giving and attendance cards plus recent audit-log activity. Each card only
+appears if the signed-in staff user has permission to view that model.
+Accounts with `is_staff` also get an **Admin Dashboard** link in the main
+navigation. The demo `superadmin` account can sign in there out of the box.
+
+## Accessibility & responsiveness
+
+`static/css/a11y.css` holds the accessibility/responsive layer (kept separate
+because `app.css` is a pre-built Tailwind bundle). It covers: skip link, visible
+focus styles, a wrapping nav with an accessible mobile menu
+(`aria-expanded`, Escape to close, `aria-current` on the active page),
+labelled form controls, table `scope`/keyboard-scrollable table regions, chart
+text alternatives, `prefers-reduced-motion`, and 44px touch targets.
+
+Run the tests with `python manage.py test`.
+
 ## Configuration
 
 Settings read from the environment (a `.env` file at the project root is loaded

@@ -16,7 +16,7 @@
 </div>
 <div class="bg-white border border-brand-100 rounded-xl overflow-x-auto shadow-sm">
 <table class="w-full text-sm">
-  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th class="p-3">Name</th><th class="p-3">Type</th></tr></thead>
+  <thead class="bg-brand-50 text-brand-600 text-left"><tr><th scope="col" class="p-3">Name</th><th scope="col" class="p-3">Type</th></tr></thead>
   <tbody>
   {% for r in session.records.all %}
     {% if r.present %}
