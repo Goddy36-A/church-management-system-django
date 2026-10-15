@@ -87,7 +87,7 @@ class SurveyResponse(models.Model):
     respondent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     respondent_role = models.CharField(max_length=50, blank=True, null=True)  # captured at time of response
     score = models.IntegerField()  # 1-5 Likert
-    is_demo_data = models.BooleanField(default=False)
+    is_seeded = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

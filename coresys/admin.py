@@ -44,7 +44,7 @@ class SurveyQuestionAdmin(admin.ModelAdmin):
 
 @admin.register(SurveyResponse)
 class SurveyResponseAdmin(admin.ModelAdmin):
-    list_display = ("question", "score", "respondent", "respondent_role", "is_demo_data", "submitted_at")
-    list_filter = ("score", "is_demo_data", "respondent_role")
+    list_display = ("question", "score", "respondent", "respondent_role", "submitted_at")
+    list_filter = ("score", "respondent_role")
     date_hierarchy = "submitted_at"
     autocomplete_fields = ("question", "respondent")

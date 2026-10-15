@@ -11,7 +11,7 @@
     <p class="text-xs text-brand-400">{{ s.description|default:'' }}</p>
   </div>
   {% empty %}
-  <p class="text-sm text-brand-400">No configurable settings yet. Core settings (church name, demo mode) are set via environment variables in <code>.env</code>.</p>
+  <p class="text-sm text-brand-400">No configurable settings yet. Core settings (church name) are set via environment variables in <code>.env</code>.</p>
   {% endfor %}
   {% if settings %}<button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-5 py-2 text-sm">Save Settings</button>{% endif %}
 </form>

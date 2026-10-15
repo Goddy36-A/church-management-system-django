@@ -38,14 +38,14 @@ python -m pip install -r requirements.txt
 echo "[3/4] Applying database migrations..."
 python manage.py migrate
 
-echo "[4/4] Seeding demo data..."
-python manage.py seed_demo || echo "WARNING: seeding failed; the app will run without demo data."
+echo "[4/4] Seeding starter data..."
+python manage.py seed_data || echo "WARNING: seeding failed; the app will run without starter data."
 
 echo
 echo "=========================================================="
 echo "  Setup complete. Run ./scripts/start.sh to launch."
 echo
-echo "  Demo accounts (password: Demo@12345):"
+echo "  Login accounts (password: Demo@12345):"
 echo "    superadmin  admin  pastor  finance  youthleader  member1"
 echo "=========================================================="
 echo

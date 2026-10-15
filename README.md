@@ -17,7 +17,7 @@ data model, same URL paths, same role-based permissions, same screens.
 ./run.sh
 ```
 
-These create a virtualenv, install dependencies, migrate, seed demo data, and
+These create a virtualenv, install dependencies, migrate, seed starter data, and
 start the server at http://127.0.0.1:8000/.
 
 ### Or use start.py directly
@@ -28,8 +28,8 @@ itself and is safe to re-run:
 ```bash
 python start.py                 # setup (as needed) + run server
 python start.py --port 8080     # different port
-python start.py --host 0.0.0.0  # listen on the LAN (for a demo machine)
-python start.py --seed          # force the demo seed to run
+python start.py --host 0.0.0.0  # listen on the LAN (for access from other machines)
+python start.py --seed          # force the data seed to run
 python start.py --reset         # DESTRUCTIVE: wipe DB, migrate, reseed
 python start.py --no-run        # set up, but don't start the server
 python start.py --check         # verify the install and exit
@@ -46,7 +46,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 python manage.py migrate
-python manage.py seed_demo      # optional: fictional demo data
+python manage.py seed_data      # optional: starter data
 python manage.py runserver
 ```
 
@@ -58,7 +58,7 @@ Matching `.bat` (Windows) and `.sh` (Linux/macOS) versions live in `scripts/`:
 |---|---|
 | `setup` | Create venv, install deps, migrate, seed. Run once. |
 | `start` | Activate the venv and launch the server. Passes args to `start.py`. |
-| `seed` | Load the fictional demo data. |
+| `seed` | Load the starter data. |
 | `reset` | **Destructive.** Wipe the database and reseed, after confirmation. |
 | `test` | Run Django system checks and the test suite. |
 
@@ -67,9 +67,9 @@ shortcuts to the two you'll use most.
 
 Then open http://127.0.0.1:8000/
 
-### Demo accounts
+### Login accounts
 
-`seed_demo` creates six accounts, all with the password `Demo@12345`:
+`seed_data` creates six accounts, all with the password `Demo@12345`:
 
 | Username | Role |
 |---|---|
@@ -80,8 +80,7 @@ Then open http://127.0.0.1:8000/
 | `youthleader` | Ministry / Department Leader |
 | `member1` | Member |
 
-All seeded records are fictional and tagged `DEMO DATA — fictional, for academic
-evaluation purposes only.` Re-run with `--reset` to wipe and reseed.
+Re-run with `--reset` to wipe and reseed.
 
 ## Django admin dashboard
 
@@ -90,7 +89,7 @@ at `/admin/`). Its index page is now a dashboard: member, event, follow-up,
 giving and attendance cards plus recent audit-log activity. Each card only
 appears if the signed-in staff user has permission to view that model.
 Accounts with `is_staff` also get an **Admin Dashboard** link in the main
-navigation. The demo `superadmin` account can sign in there out of the box.
+navigation. The `superadmin` account can sign in there out of the box.
 
 ## Accessibility & responsiveness
 
@@ -127,7 +126,6 @@ Skipping this gives a clear error telling you to run that command, rather
 than a confusing build failure.
 | `DATABASE_NAME` | `db.sqlite3` | SQLite file path. |
 | `CHURCH_NAME` | Grace Family Church - Mbarara | Shown in the header. |
-| `DEMO_MODE` | `true` | Shows the demo-data banner. |
 
 With `DJANGO_DEBUG=false`, secure session and CSRF cookies are enabled
 automatically. Static files are served via WhiteNoise — run

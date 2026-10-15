@@ -41,10 +41,10 @@ if errorlevel 1 (
     goto :end_fail
 )
 
-echo [4/4] Seeding demo data...
-python manage.py seed_demo
+echo [4/4] Seeding starter data...
+python manage.py seed_data
 if errorlevel 1 (
-    echo WARNING: Seeding failed. The app will still run, but with no demo data.
+    echo WARNING: Seeding failed. The app will still run, but with no starter data.
 )
 
 echo.
@@ -52,7 +52,7 @@ echo ==========================================================
 echo   Setup complete.
 echo   Run start.bat to launch the server.
 echo.
-echo   Demo accounts ^(password: Demo@12345^):
+echo   Login accounts ^(password: Demo@12345^):
 echo     superadmin  admin  pastor  finance  youthleader  member1
 echo ==========================================================
 echo.

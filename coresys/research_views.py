@@ -21,11 +21,11 @@ def index(request):
         mean = round(sum(r.score for r in responses) / n, 2) if n else 0
         counts = {i: sum(1 for r in responses if r.score == i) for i in range(1, 6)}
         percentages = {i: round(counts[i] / n * 100, 1) if n else 0 for i in range(1, 6)}
-        demo_count = sum(1 for r in responses if r.is_demo_data)
+        seeded_count = sum(1 for r in responses if r.is_seeded)
         bars = [{"score": i, "percent": percentages[i], "count": counts[i]} for i in range(1, 6)]
         results.append({
             "question": q, "n": n, "mean": mean, "counts": counts,
-            "percentages": percentages, "demo_count": demo_count, "bars": bars,
+            "percentages": percentages, "seeded_count": seeded_count, "bars": bars,
         })
 
     return render(request, "research/index.html", {"results": results})
@@ -63,7 +63,7 @@ def respond(request):
                     respondent=request.user,
                     respondent_role=request.user.role.name if request.user.role else None,
                     score=score,
-                    is_demo_data=False,
+                    is_seeded=False,
                 )
         log_action(request, "survey_response.submit", description="Submitted evaluation survey")
         messages.success(request, "Thank you - your evaluation responses have been recorded.")

@@ -1,10 +1,10 @@
 """
-Seed the database with clearly-labeled, fictional demo data for the
+Seed the database with starter data for the
 Church Management Information System (Mbarara City academic prototype).
 
 Usage:
-    python manage.py seed_demo            # seeds (idempotent — safe to re-run)
-    python manage.py seed_demo --reset    # deletes existing demo rows first
+    python manage.py seed_data            # seeds (idempotent — safe to re-run)
+    python manage.py seed_data --reset    # deletes existing seeded rows first
 """
 
 import random
@@ -37,8 +37,7 @@ LAST_NAMES = [
     "Mukasa", "Namara", "Tugume", "Basemera",
 ]
 
-FICTION_NOTICE = "DEMO DATA — fictional, for academic evaluation purposes only."
-DEMO_PASSWORD = "Demo@12345"
+DEFAULT_PASSWORD = "Demo@12345"
 
 
 def random_name_pair(used):
@@ -50,7 +49,7 @@ def random_name_pair(used):
 
 
 class Command(BaseCommand):
-    help = "Seed the database with fictional, clearly-labeled demo data."
+    help = "Seed the database with starter data and sign-in accounts."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -92,7 +91,7 @@ class Command(BaseCommand):
         ministry_names = ["Youth", "Men", "Women", "Children", "Worship", "Evangelism", "Prayer", "Ushering Media"]
         ministries = [
             Ministry.objects.get_or_create(
-                name=name, defaults={"description": f"{name} ministry. {FICTION_NOTICE}"}
+                name=name, defaults={"description": f"{name} ministry"}
             )[0]
             for name in ministry_names
         ]
@@ -101,7 +100,7 @@ class Command(BaseCommand):
         department_names = ["Finance", "Facilities", "Communications", "Welfare"]
         departments = [
             Department.objects.get_or_create(
-                name=name, defaults={"description": f"{name} department. {FICTION_NOTICE}"}
+                name=name, defaults={"description": f"{name} department"}
             )[0]
             for name in department_names
         ]
@@ -116,7 +115,7 @@ class Command(BaseCommand):
             for name in group_names
         ]
 
-        self.stdout.write("Creating fictional members...")
+        self.stdout.write("Creating members...")
         statuses_pool = (
             [MembershipStatus.ACTIVE] * 6 + [MembershipStatus.NEW] * 2
             + [MembershipStatus.INACTIVE] * 2 + [MembershipStatus.TRANSFERRED]
@@ -145,7 +144,7 @@ class Command(BaseCommand):
                     ),
                     ministry=random.choice(ministries) if random.random() > 0.2 else None,
                     department=random.choice(departments) if random.random() > 0.6 else None,
-                    notes=FICTION_NOTICE,
+                    notes="",
                 )
         members = list(Member.objects.all())
 
@@ -167,7 +166,7 @@ class Command(BaseCommand):
                 for member in random.sample(members, k=min(6, len(members))):
                     GroupMember.objects.get_or_create(group=group, member=member)
 
-        self.stdout.write("Creating demo user accounts...")
+        self.stdout.write("Creating user accounts...")
 
         def create_user(username, email, full_name, role_name, member_link=None):
             if User.objects.filter(username=username).exists():
@@ -180,19 +179,19 @@ class Command(BaseCommand):
                 is_staff=(role_name == RoleName.SUPER_ADMIN),
                 is_superuser=(role_name == RoleName.SUPER_ADMIN),
             )
-            user.set_password(DEMO_PASSWORD)
+            user.set_password(DEFAULT_PASSWORD)
             user.save()
             return user
 
-        create_user("superadmin", "superadmin@example.org", "Grace Ahumuza", RoleName.SUPER_ADMIN)
+        create_user("superadmin", "superadmin@example.org", "System Administrator", RoleName.SUPER_ADMIN)
         create_user("admin", "admin@example.org", "Peter Rwabwogo", RoleName.ADMIN)
         create_user("pastor", "pastor@example.org", "Pastor Daniel Mugume", RoleName.PASTOR)
         create_user("finance", "finance@example.org", "Sarah Nabatanzi", RoleName.FINANCE_OFFICER)
         create_user("youthleader", "youthleader@example.org", "James Katsigazi", RoleName.MINISTRY_LEADER)
         if members:
-            demo_member = members[0]
-            create_user("member1", "member1@example.org", demo_member.full_name,
-                        RoleName.MEMBER, member_link=demo_member)
+            first_member = members[0]
+            create_user("member1", "member1@example.org", first_member.full_name,
+                        RoleName.MEMBER, member_link=first_member)
 
         self.stdout.write("Creating attendance sessions (last 12 weeks of Sunday services)...")
         if AttendanceSession.objects.count() < 10 and members:
@@ -202,7 +201,7 @@ class Command(BaseCommand):
                     title=f"Sunday Service - {session_date.strftime('%d %b %Y')}",
                     service_type=ServiceType.SUNDAY_SERVICE,
                     session_date=session_date,
-                    notes=FICTION_NOTICE,
+                    notes="",
                 )
                 attendees = random.sample(
                     members, k=random.randint(int(len(members) * 0.4), int(len(members) * 0.85))
@@ -224,7 +223,7 @@ class Command(BaseCommand):
             ]
             for title, etype, days_ahead, location in event_defs:
                 event = Event.objects.create(
-                    title=title, description=f"{title}. {FICTION_NOTICE}", event_type=etype,
+                    title=title, description=f"{title}", event_type=etype,
                     start_date=date.today() + timedelta(days=days_ahead),
                     location=location, max_participants=100, status=EventStatus.PLANNED,
                 )
@@ -246,7 +245,7 @@ class Command(BaseCommand):
             ]
             for title, message, priority in announcements:
                 Announcement.objects.create(
-                    title=title, message=f"{message} {FICTION_NOTICE}",
+                    title=title, message=f"{message}",
                     target_audience=AnnouncementAudience.ALL,
                     priority=priority, status="published",
                 )
@@ -257,11 +256,11 @@ class Command(BaseCommand):
             for member in inactive_members:
                 FollowUp.objects.create(
                     member=member, reason=FollowUpReason.REPEATED_ABSENCE,
-                    status=FollowUpStatus.PENDING, notes=FICTION_NOTICE,
+                    status=FollowUpStatus.PENDING, notes="",
                     next_followup_date=date.today() + timedelta(days=7),
                 )
 
-        self.stdout.write("Creating contribution categories and demo contributions...")
+        self.stdout.write("Creating contribution categories and contributions...")
         category_names = ["Tithe", "Offering", "Building Fund", "Special Donation"]
         categories = [ContributionCategory.objects.get_or_create(name=name)[0] for name in category_names]
 
@@ -273,10 +272,10 @@ class Command(BaseCommand):
                     amount=random.choice([5000, 10000, 20000, 50000, 100000]),
                     contribution_date=date.today() - timedelta(days=random.randint(0, 300)),
                     payment_method=random.choice(["cash", "mobile_money", "bank"]),
-                    notes=FICTION_NOTICE,
+                    notes="",
                 )
 
-        self.stdout.write("Creating research evaluation questions and demo responses...")
+        self.stdout.write("Creating research evaluation questions and responses...")
         admin_efficiency_qs = [
             "The system reduces the time required to manage member records.",
             "The system makes member information easier to retrieve.",
@@ -311,7 +310,7 @@ class Command(BaseCommand):
                     SurveyResponse.objects.create(
                         question=q,
                         score=random.choices([1, 2, 3, 4, 5], weights=[1, 2, 4, 6, 5])[0],
-                        is_demo_data=True, respondent_role="demo",
+                        is_seeded=True, respondent_role="member",
                     )
 
         self.stdout.write("Adding sample administrative efficiency baseline metrics...")
@@ -324,9 +323,9 @@ class Command(BaseCommand):
             for name, prev, cur in sample_metrics:
                 EfficiencyMetric.objects.create(
                     metric_name=name, previous_process_value=prev, cmis_process_value=cur,
-                    unit="minutes", notes=FICTION_NOTICE,
+                    unit="minutes", notes="",
                 )
 
         self.stdout.write(self.style.SUCCESS("\nSeed complete."))
-        self.stdout.write(f"Demo login accounts (password for all: {DEMO_PASSWORD}):")
+        self.stdout.write(f"Login accounts (password for all: {DEFAULT_PASSWORD}):")
         self.stdout.write("  superadmin / admin / pastor / finance / youthleader / member1")

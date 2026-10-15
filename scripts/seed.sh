@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ===================================================================
-#  seed.sh - load fictional demo data into the database (Linux/macOS)
+#  seed.sh - load starter data into the database (Linux/macOS)
 # ===================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -12,9 +12,9 @@ fi
 
 # shellcheck disable=SC1091
 source .venv/bin/activate
-python manage.py seed_demo
+python manage.py seed_data
 
 echo
-echo "Demo accounts (password: Demo@12345):"
+echo "Login accounts (password: Demo@12345):"
 echo "  superadmin  admin  pastor  finance  youthleader  member1"
 echo

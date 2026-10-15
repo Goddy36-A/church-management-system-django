@@ -24,11 +24,6 @@
     <p class="text-center text-sm text-brand-500 mt-4">
       Don't have an account? <a href="{% url 'accounts:register' %}" class="text-brand-600 hover:underline">Create one</a>
     </p>
-    {% if demo_mode %}
-    <p class="mt-4 text-xs text-brand-400 text-center">
-      Demo mode is active. Test account credentials are documented in the project README, not shown here.
-    </p>
-    {% endif %}
   </div>
 </div>
 {% endblock %}

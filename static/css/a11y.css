@@ -38,7 +38,6 @@ main[tabindex="-1"]:focus { outline: none; }
 .cm-user-label { color: #dce2ef; }
 
 /* ---- Contrast fixes ---- */
-.cm-demo-banner { background: #fbf4e7; border: 1px solid #b08337; color: #5c3f0c; font-size: .8125rem; }
 footer.cm-footer { color: #3b4a6b; }
 
 /* ---- Responsive content ---- */

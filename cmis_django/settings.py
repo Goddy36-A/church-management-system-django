@@ -140,7 +140,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ---- CMIS-specific settings (mirrors the original config.py) ----
 CHURCH_NAME = os.environ.get("CHURCH_NAME", "Grace Family Church - Mbarara")
-DEMO_MODE = os.environ.get("DEMO_MODE", "true").lower() == "true"
 ITEMS_PER_PAGE = 15
 
 SESSION_COOKIE_HTTPONLY = True

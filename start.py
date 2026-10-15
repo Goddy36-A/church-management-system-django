@@ -8,8 +8,8 @@ the development server.
 Usage:
     python start.py                 # setup (if needed) + run server on :8000
     python start.py --port 8080     # use a different port
-    python start.py --host 0.0.0.0  # listen on all interfaces (LAN demo)
-    python start.py --seed          # force the demo data seed to run
+    python start.py --host 0.0.0.0  # listen on all interfaces (LAN access)
+    python start.py --seed          # force the data seed to run
     python start.py --reset         # DESTRUCTIVE: wipe DB, migrate, reseed
     python start.py --no-run        # do the setup, but don't start the server
     python start.py --check         # verify the install, then exit
@@ -18,7 +18,7 @@ What it does:
     1. Checks the Python version.
     2. Installs requirements.txt if Django isn't importable.
     3. Applies migrations (making them first if any model has no migration).
-    4. Seeds demo data, but only if the database looks empty.
+    4. Seeds starter data, but only if the database looks empty.
     5. Starts the dev server.
 """
 
@@ -161,22 +161,22 @@ def database_is_empty():
 
 def seed(force=False, reset=False):
     if reset:
-        step("Reseeding demo data (--reset: existing data will be replaced)")
-        if manage("seed_demo", "--reset").returncode != 0:
+        step("Reseeding starter data (--reset: existing data will be replaced)")
+        if manage("seed_data", "--reset").returncode != 0:
             fail("Seeding failed.")
-        ok("Demo data reseeded.")
+        ok("Starter data reseeded.")
         return
 
     if not force and not database_is_empty():
-        step("Checking demo data")
+        step("Checking starter data")
         ok("Database already contains records; skipping seed.")
         warn("Use --seed to seed anyway, or --reset to wipe and start over.")
         return
 
-    step("Seeding demo data")
-    if manage("seed_demo").returncode != 0:
+    step("Seeding starter data")
+    if manage("seed_data").returncode != 0:
         fail("Seeding failed.")
-    ok("Demo data created.")
+    ok("Starter data created.")
 
 
 def reset_database():
@@ -209,7 +209,7 @@ def print_banner(host, port):
     print(_c("36;1", "  Church Management Information System — Django"))
     print(_c("36", f"  {url}"))
     print()
-    print("  Demo accounts (password for all: Demo@12345):")
+    print("  Login accounts (password for all: Demo@12345):")
     print("    superadmin · admin · pastor · finance · youthleader · member1")
     print(_c("36", f"└{line}┘\n"))
 
@@ -229,9 +229,9 @@ def main():
     )
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind (default: 127.0.0.1)")
     parser.add_argument("--port", default="8000", help="Port to bind (default: 8000)")
-    parser.add_argument("--seed", action="store_true", help="Seed demo data even if records exist")
+    parser.add_argument("--seed", action="store_true", help="Seed starter data even if records exist")
     parser.add_argument("--reset", action="store_true", help="DESTRUCTIVE: wipe the database and reseed")
-    parser.add_argument("--no-seed", action="store_true", help="Skip the demo data seed entirely")
+    parser.add_argument("--no-seed", action="store_true", help="Skip the data seed entirely")
     parser.add_argument("--no-run", action="store_true", help="Set up but don't start the server")
     parser.add_argument("--check", action="store_true", help="Verify the install and exit")
     parser.add_argument("--yes", action="store_true", help="Skip the --reset confirmation prompt")

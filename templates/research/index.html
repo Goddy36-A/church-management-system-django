@@ -10,8 +10,7 @@
   </div>
 </div>
 <p class="text-xs text-brand-400 mb-6 max-w-2xl">
-  Likert-scale results below (1 = Strongly Disagree, 5 = Strongly Agree). Responses marked DEMO indicate
-  clearly-labeled demonstration data, not real respondent data, and should be excluded from any actual research analysis.
+  Likert-scale results below (1 = Strongly Disagree, 5 = Strongly Agree).
 </p>
 
 <div class="space-y-4">
@@ -25,7 +24,7 @@
         {% badge 'Administrative Efficiency' 'brand' %}
       {% endif %}
     </div>
-    <p class="text-xs text-brand-500 mt-2">n = {{ r.n }} responses ({{ r.demo_count }} demo) · Mean score: {{ r.mean }}</p>
+    <p class="text-xs text-brand-500 mt-2">n = {{ r.n }} responses · Mean score: {{ r.mean }}</p>
     <div class="grid grid-cols-5 gap-2 mt-3 text-center text-xs">
       {% for bar in r.bars %}
       <div>
