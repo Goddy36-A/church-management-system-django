@@ -184,13 +184,13 @@ class Command(BaseCommand):
             return user
 
         create_user("superadmin", "superadmin@example.org", "System Administrator", RoleName.SUPER_ADMIN)
-        create_user("admin", "admin@example.org", "Peter Rwabwogo", RoleName.ADMIN)
-        create_user("pastor", "pastor@example.org", "Pastor Daniel Mugume", RoleName.PASTOR)
-        create_user("finance", "finance@example.org", "Sarah Nabatanzi", RoleName.FINANCE_OFFICER)
-        create_user("youthleader", "youthleader@example.org", "James Katsigazi", RoleName.MINISTRY_LEADER)
+        create_user("admin", "admin@example.org", "Church Administrator", RoleName.ADMIN)
+        create_user("pastor", "pastor@example.org", "Pastor", RoleName.PASTOR)
+        create_user("finance", "finance@example.org", "Finance Officer", RoleName.FINANCE_OFFICER)
+        create_user("youthleader", "youthleader@example.org", "Youth Ministry Leader", RoleName.MINISTRY_LEADER)
         if members:
             first_member = members[0]
-            create_user("member1", "member1@example.org", first_member.full_name,
+            create_user("member1", "member1@example.org", "Member",
                         RoleName.MEMBER, member_link=first_member)
 
         self.stdout.write("Creating attendance sessions (last 12 weeks of Sunday services)...")
