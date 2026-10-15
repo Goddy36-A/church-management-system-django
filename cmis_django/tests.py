@@ -91,3 +91,17 @@ class SuperAdminStaffFlagTests(TestCase):
         role, _ = Role.objects.get_or_create(name=RoleName.ADMIN)
         u = User.objects.create_user(username="ad", password="pw-12345-x", email="ad@x.org", role=role)
         self.assertFalse(u.is_staff)
+
+
+@PLAIN_STATIC
+class AdminRecentActivityTests(TestCase):
+    def test_audit_log_without_user_does_not_break_dashboard(self):
+        from coresys.models import AuditLog
+        role, _ = Role.objects.get_or_create(name=RoleName.SUPER_ADMIN)
+        su = User.objects.create_user(username="sa2", password="pw-12345-x", email="sa2@x.org", role=role)
+        AuditLog.objects.create(user=None, action="auth.login_failed", description="Failed login for 'x'")
+        AuditLog.objects.create(user=su, action="auth.login", description="Successful login")
+        self.client.force_login(su)
+        r = self.client.get("/django-admin/")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "auth.login_failed")

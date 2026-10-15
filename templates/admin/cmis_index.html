@@ -54,7 +54,7 @@
           {% for log in recent_audit_logs %}
           <tr>
             <td>{{ log.created_at|date:"d M, H:i" }}</td>
-            <td>{{ log.user.full_name|default:log.user.username|default:"—" }}</td>
+            <td>{% if log.user %}{{ log.user.full_name|default:log.user.get_username }}{% else %}—{% endif %}</td>
             <td>{{ log.action }}</td>
             <td>{{ log.description|default:"—" }}</td>
           </tr>
